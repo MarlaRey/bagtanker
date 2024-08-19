@@ -1,0 +1,71 @@
+/* Stil for burger-ikonet */
+.burger-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    z-index: 1001;
+  }
+  
+  .line {
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    transition: all 0.3s ease;
+  }
+  
+  /* Animation for krydsikon */
+  .line1.open {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .line2.open {
+    opacity: 0;
+  }
+  
+  .line3.open {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+  
+  /* Stil for menuen */
+  .menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100vh;
+    background-color: darkblue;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    z-index: 1000;
+  }
+  
+  .menu.open {
+    width: 250px; /* Bredde på menuen når åben */
+  }
+  
+  .menu nav ul {
+    list-style: none;
+    padding: 100px 20px; /* Juster padding for at placere links */
+    text-align: right;
+  }
+  
+  .menu nav ul li {
+    margin: 20px 0;
+  }
+  
+  .menu nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .menu nav ul li a:hover {
+    text-decoration: underline;
+  }
+  

@@ -1,0 +1,20 @@
+
+
+   *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   }
+
+   /* dette er tilføjet for at sikre, at pseudo-elementer også er inkluderet */
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+   ul{
+     list-style: none;
+   }
+   img{
+     width: 100%;
+   }
+ 

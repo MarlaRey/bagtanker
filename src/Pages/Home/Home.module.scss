@@ -1,0 +1,44 @@
+.home {
+    position: relative;
+    height: 100vh;
+    color: #fff;
+
+  }
+  
+  header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    //det kan nemt være denne styling ikke lige er det smartest når vi skal gå til responsivt...
+    h2{
+      position: absolute;
+      top: 150%;
+    left: 10%;
+    }
+  }
+  
+  .news-section {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+
+  }
+  
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+  }
+  
+  .logo {
+width: 20%;
+  }
+  
+ 
