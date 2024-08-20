@@ -1,7 +1,7 @@
-// src/pages/Login/Login.js
 import React, { useState, useContext } from 'react';
+import styles from './Login.module.scss'; // Import CSS modules
 import supabase from '../../../supabase.js';
-//import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext'; // Kommentér dette ind hvis AuthContext er implementeret
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,7 +10,7 @@ const Login = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn } = useContext(AuthContext); // Kommentér dette ind hvis AuthContext er implementeret
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -20,11 +20,11 @@ const Login = () => {
       setError(error.message);
       setSuccess("");
     } else {
-      setSuccess(`You have logged in successfully!`);
+      setSuccess("Du er nu logget ind!");
       setError("");
       setEmail("");
       setPassword("");
-      setIsLoggedIn(true);
+      setIsLoggedIn(true); // Kommentér dette ind hvis AuthContext er implementeret
     }
   };
 
@@ -34,13 +34,13 @@ const Login = () => {
     const { data, error } = await supabase.auth.signUp({ email: registerEmail, password: registerPassword });
     if (error) {
       if (error.message === 'Email rate limit exceeded') {
-        setError('Too many requests. Please wait a while before trying again.');
+        setError('For mange forsøg. Prøv igen senere.');
       } else {
         setError(error.message);
       }
       setSuccess("");
     } else {
-      setSuccess(`Account created successfully! Please check your email for verification.`);
+      setSuccess("Din konto er oprettet! Tjek venligst din email for at bekræfte.");
       setError("");
       setRegisterEmail("");
       setRegisterPassword("");
@@ -48,55 +48,59 @@ const Login = () => {
   };
 
   return (
-    <div>
-            <img src="src\assets\images\banner_blue.png" alt="mediesuset" />
+    <div className={styles.loginContainer}>
+      <img src="src/assets/images/banner_blue.png" alt="mediesuset" className={styles.bannerImage} />
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin} className={styles.form}>
         <h2>Log ind</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {success && <p style={{ color: 'green' }}>{success}</p>}
-        <div>
+        {error && <p className={styles.error}>{error}</p>}
+        {success && <p className={styles.success}>{success}</p>}
+        <div className={styles.formGroup}>
           <label>Email:</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className={styles.input}
           />
         </div>
-        <div>
+        <div className={styles.formGroup}>
           <label>Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className={styles.input}
           />
         </div>
-        <button type="submit">Log ind</button>
+        <button type="submit" className={styles.button}>Log ind</button>
       </form>
 
-      <form onSubmit={handleRegister}>
+      <form onSubmit={handleRegister} className={styles.form}>
         <h2>Opret ny bruger</h2>
-        <div>
+        <div className={styles.formGroup}>
           <label>Email:</label>
           <input
             type="email"
             value={registerEmail}
             onChange={(e) => setRegisterEmail(e.target.value)}
             required
+            className={styles.input}
           />
         </div>
-        <div>
+        <div className={styles.formGroup}>
           <label>Password:</label>
           <input
             type="password"
             value={registerPassword}
             onChange={(e) => setRegisterPassword(e.target.value)}
             required
+            className={styles.input}
           />
         </div>
-        <button type="submit">Opret bruger</button>
+        <button type="submit" className={styles.button}>Opret bruger</button>
       </form>
     </div>
   );

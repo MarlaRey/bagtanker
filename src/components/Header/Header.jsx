@@ -1,11 +1,14 @@
 import React from 'react';
-import './Header.module.scss';
+import { Link } from 'react-router-dom';
+import styles from './Header.module.scss';
 
 const Header = () => {
   return (
-    <header className="header">
-      <img src="src\assets\images\Logo.png" alt="Bagtanker Logo" className="logo" />
-      <button className="navbar-icon" onClick={toggleSidebar}>☰</button>
+    <header className={styles.header}>
+      <Link to="/">
+        <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className={styles.logo} />
+      </Link>
+      <button className={styles['navbar-icon']} onClick={toggleSidebar}>☰</button>
     </header>
   );
 };

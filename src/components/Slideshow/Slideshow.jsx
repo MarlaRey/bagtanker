@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import './Slideshow.module.scss';
+import React, { useState, useEffect } from 'react';
+import styles from './Slideshow.module.scss';
 
-const Slideshow = ({ images }) => {
+const Slideshow = ({ images, showDots = true, fullHeight = false }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -15,17 +15,19 @@ const Slideshow = ({ images }) => {
   }, [images.length]);
 
   return (
-    <div className="slideshow">
-      <img src={images[currentImageIndex]} alt="Slideshow" className="slideshow-image" />
-      <div className="slideshow-dots">
-        {images.map((_, index) => (
-          <span
-            key={index}
-            className={index === currentImageIndex ? 'active' : ''}
-            onClick={() => setCurrentImageIndex(index)}
-          ></span>
-        ))}
-      </div>
+    <div className={`${styles.slideshow} ${fullHeight ? styles.fullHeight : ''}`}>
+      <img src={images[currentImageIndex]} alt="Slideshow" className={styles['slideshow-image']} />
+      {showDots && (
+        <div className={styles['slideshow-dots']}>
+          {images.map((_, index) => (
+            <span
+              key={index}
+              className={index === currentImageIndex ? styles.active : ''}
+              onClick={() => setCurrentImageIndex(index)}
+            ></span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

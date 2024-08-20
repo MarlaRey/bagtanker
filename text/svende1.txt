@@ -1,0 +1,46 @@
+Mandag
+jeg var spændt på om jeg kunne bruge noget fra mediesuset, det kunne jeg. men der er lige lidt forventeligt opstartsknas. man skal mange ting igennem når man sætter sådan et projekt her op. ruter og hierakier er vigtige, for ikke at tale om relationerne i supabase og tvivlen om hvorvidt man nu gør det rigtigt med den datsabase. men jeg har fået hul igennem til nogle news og tilhørende billeder på forsiden så nu er vi i gang. 
+
+TIRSDAG
+Issues
+i dag har jeg fået lavet et githubproject med issues og det giver et fint overblik. men da jeg åbner min side ser den slet ikke ud som jeg husker. forsiden er helt skør, det må jeg lige starte med at undersøge hvad skyldes. 
+
+Husk gitignore!
+Det var en træls start med mit første push til github igår, fordi jeg havde glemt at lave en gitignore! så huhej og research fik jeg heldigvis slettet min .env fra historikken alligevel. men det er ikke sådan bare lige lige der på github. jeg oprettede en gitignore og pushede den og kørte: 
+"git rm --cached .env" og 
+"git commit -m "Fjern .env fra version control" og
+"brew install bfg" og
+"bfg --delete-files .env" og
+"git reflog expire --expire=now --all && git gc --prune=now --aggressive"
+
+Mus er i udu
+det er rigtig ubelejligt og træls, jeg bestiller straks en ny over nettet.
+
+Ahaa
+det er fordi jeg tilføjede ".module" til alle mine scss-sheets i går og nu er der ikke forbindelse, jeg må finde ud af hvorfor. jeg finder ud af at måned man arbejder med modules jo har nogle andre tilgange. Disse skal importeres og klasserne skal kaldes på en anden måde. jeg tror lige jeg får oprettet et issue som tager hånd om dette i min backlog, for det kommer da til at tage lidt tid....
+
+Layoutstruktur
+jeg skal bygge det gennemgårende design som kan omkranse alle sider pånær forsiden. jeg bygger derfor et komponent til dette, som hedder Layout og inkluderer det omkring min routing i App, på alle elementer pånær forsiden.
+
+SLideshowets højde og dots
+jeg ønsker at slideshowet skal gå igen på alle sider, men kun have fuld højde og dots på forsiden. 
+
+For at få slideshowet til at køre med fuld højde og vise dots på forsiden, mens det tilpasses højden og skjuler dots i Layout-komponenten, blev der implementeret en metode baseret på props.
+
+I Slideshow-komponenten blev der tilføjet to props: fullHeight og showDots. Prop'en fullHeight bestemmer, om slideshowet skal have fuld højde (100vh) eller en fast højde, mens showDots styrer, om navigationsdots skal vises.
+
+Når Slideshow bruges på forsiden (Home), konfigureres den med fullHeight={true} og showDots={true}, så slideshowet fylder hele skærmen og viser dots til navigation. I Layout-komponenten bruges Slideshow med fullHeight={false} og showDots={false}, hvilket resulterer i en tilpasset højde og skjulte dots.
+
+Oprettelse af tilmelding til  nyhedsbrev i footer og sende email til supabase:
+Her er de specifikke trin jeg fulgte:
+
+Input Håndtering: Jeg bruger React's useState til at håndtere email-input og gemme eventuelle fejl eller succesmeddelelser.
+Validering: Før data sendes til Supabase, validerer jeg inputtet for at sikre, at det er en korrekt formateret email.
+Dataindsættelse: Hvis emailen er gyldig, bruger jeg Supabase's insert metode til at tilføje emailen til newsletter_emails-tabellen.
+Fejlhåndtering: Hvis der opstår en fejl under indsættelsen, fanger jeg den og viser en passende fejlmeddelelse til brugeren.
+Success Feedback: Hvis indsættelsen er succesfuld, viser jeg en bekræftelsesmeddelelse for at informere brugeren om, at deres email er blevet tilføjet.
+
+NAVIgations-font findes ikke.
+jeg må forsøge at løse det condensed udtryk med css. jeg googler det og finder ud af at man kan stretche. Det tilføjer jeg til min .menu a
+
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Home.module.scss';
+import styles from './Home.module.scss';
 import Slideshow from '../../components/Slideshow/Slideshow';
 import supabase from '../../../supabase';
 import { Link } from 'react-router-dom';
@@ -14,8 +14,7 @@ const Home = () => {
     'src/assets/images/bread-full06.jpeg',
     'src/assets/images/bread-full07.jpeg',
     'src/assets/images/bread-full08.jpeg',
-    'src/assets/images/bread-full09.jpeg',
-    'src/assets/images/bread-full010.jpeg',
+    'src/assets/images/bread-full09.jpeg'
   ];
 
   const [news, setNews] = useState([]);
@@ -58,22 +57,24 @@ const Home = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="home">
-      <Slideshow images={images} />
+    <div className={styles.home}>
+      <Slideshow images={images} showDots={true} fullHeight={true} />
       <header>
-        <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className="logo" />
+        <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className={styles.logo} />
         <h2>Nyheder</h2>
       </header>
 
-      <div className="news-section">
-        <div className="news-grid">
+      <div className={styles['news-section']}>
+        <div className={styles['news-grid']}>
           {news.map((newsItem) => (
-            <div key={newsItem.id} className="news-item">
+            <div key={newsItem.id} className={styles['news-item']}>
               <p>{new Date(newsItem.created_at).toLocaleDateString()}</p>
               <img src={newsItem.image_url} alt={newsItem.title} />
               <h3>{newsItem.title}</h3>
               <p>{newsItem.teaser}</p>
-              <Link to={`/nyheder/${newsItem.id}`} className="read-more-button">Read more</Link>
+              <Link to={`/nyheder/${newsItem.id}`} className={styles['read-more-button']}>
+                Read more
+              </Link>
             </div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import supabase from '../../../supabase';
+import styles from './NewsDetail.module.scss'; // Importer CSS-modulet
 
 const NewsDetail = () => {
   const { id } = useParams();
@@ -66,18 +67,18 @@ const NewsDetail = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      <h2>{newsItem.title}</h2>
-      <h4>Skrevet af {newsItem.author} den {new Date(newsItem.datetime).toLocaleDateString()}</h4>
+    <div className={styles.newsDetail}> {/* Anvend CSS-moduler */}
+      <h2 className={styles.title}>{newsItem.title}</h2>
+      <h4 className={styles.author}>Skrevet af {newsItem.author} den {new Date(newsItem.datetime).toLocaleDateString()}</h4>
       {newsItem.image && (
-        <div>
-          <img src={newsItem.image.filename} alt={newsItem.title} />
-          <p>Foto: {newsItem.image.author}</p>
+        <div className={styles.imageContainer}>
+          <img src={newsItem.image.filename} alt={newsItem.title} className={styles.image} />
+          <p className={styles.imageAuthor}>Foto: {newsItem.image.author}</p>
         </div>
       )}
-      <p>{newsItem.content}</p>
+      <p className={styles.content}>{newsItem.content}</p>
     </div>
   );
-}
+};
 
 export default NewsDetail;

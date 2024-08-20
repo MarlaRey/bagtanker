@@ -12,6 +12,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Footer from './components/Footer/Footer';
 import BurgerMenu from './components/BurgerMenu/BurgerMenu';
 import NewsDetail from './Pages/News/NewsDetail';
+import Layout from './components/PageLayout/Layout';
 
 
 const App = () => {
@@ -20,14 +21,13 @@ const App = () => {
       <BurgerMenu />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/produkter" element={<ProductList />} />
-          <Route path="/produkt/:id" element={<ProductDetails />} />
-          <Route path="/nyheder" element={<News />} />
-          <Route path="/kontakt" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/nyheder/:id" element={<NewsDetail />} />
+          <Route path="/produkter" element={<Layout><ProductList /></Layout>} />
+          <Route path="/produkt/:id" element={<Layout><ProductDetails /></Layout>} />
+          <Route path="/nyheder" element={<Layout><News /></Layout>} />
+          <Route path="/kontakt" element={<Layout><Contact /></Layout>} />
+          <Route path="/login" element={<Layout><Login /></Layout>} />
+          <Route path="/nyheder/:id" element={<Layout><NewsDetail /></Layout>} />
         </Routes>
-        <Footer />
     </Router>
   );
 };
