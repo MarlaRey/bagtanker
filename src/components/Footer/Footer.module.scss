@@ -1,94 +1,132 @@
 // src/components/Footer/Footer.module.scss
 .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    background-color: #323540;
-    color: white;
-    height: 326px;
-    padding: 3rem;
-    box-sizing: border-box;
-    margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #323540;
+  color: white;
+  height: 326px;
+  padding: 3rem;
+  box-sizing: border-box;
+  margin-top: 2rem;
+}
+
+.leftSide {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.logo {
+  width: 150px;
+  /* Juster efter behov */
+  height: auto;
+}
+
+address {
+  font-size: 18px;
+  font-style: normal;
+  /* Fjerner kursiv */
+
+  a {
+    color: inherit;
+    /* Arver farven fra den overordnede container (i dette tilfælde vil det være farven på adressen) */
+    text-decoration: none;
+    /* Fjerner understregning */
   }
-  
-  .leftSide {
-    display: flex;
+}
+
+
+.rightSide {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 600px;
+
+  /* Juster efter behov */
+  p {
+    text-align: right;
+    margin-bottom: 2rem;
+  }
+}
+
+.rightSide h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 0.8rem;
+  width: 80%;
+  margin-left: auto;
+}
+
+footer button {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #5F657B;
+  text-transform: uppercase;
+  /* Sørger for at teksten vises med kapitaler */
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  width: 50%;
+  margin-left: auto;
+  font-weight: 100;
+}
+
+button:hover {
+  background-color: darkorange;
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
+@media (max-width: 1000px) {
+  .footer {
+    height: 100%;
     flex-direction: column;
-    gap: 10px;
-  }
-  
-  .logo {
-    width: 150px; /* Juster efter behov */
-    height: auto;
-  }
-  
-  address {
-    font-size: 18px;
-    font-style: normal; /* Fjerner kursiv */
-    
-    a {
-      color: inherit; /* Arver farven fra den overordnede container (i dette tilfælde vil det være farven på adressen) */
-      text-decoration: none; /* Fjerner understregning */
+    gap: 1rem;
+    align-items: center;
+
+    address {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo {
+      place-self: center;
+    }
+
+    .rightSide p {
+      text-align: center;
+      margin-bottom: 1rem;
+      ;
+    }
+
+    input {
+      width: 100%;
+    }
+
+    footer button {
+      width: 100%;
     }
   }
-  
-  
-  .rightSide {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 600px; /* Juster efter behov */
-    p{
-        text-align: right;
-        margin-bottom: 2rem;
-    }
-  }
-  
-  .rightSide h2 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 500;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  input {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    padding: 0.8rem;
-    width: 80%;
-    margin-left: auto;
-  }
-  
-  footer button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color:#5F657B;
-    text-transform: uppercase; /* Sørger for at teksten vises med kapitaler */
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    width: 50%;
-    margin-left: auto;
-    font-weight: 100;
-  }
-  
-  button:hover {
-    background-color: darkorange;
-  }
-  
-  .error {
-    color: red;
-  }
-  
-  .success {
-    color: green;
-  }
-  
+}

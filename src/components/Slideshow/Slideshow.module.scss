@@ -41,3 +41,9 @@
 .slideshow-dots .active {
   opacity: 1;
 }
+@media (max-width: 700px) {
+  .slideshow {
+  
+    height: 100px !important;
+
+  }}
