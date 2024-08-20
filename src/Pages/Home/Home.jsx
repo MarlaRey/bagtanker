@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
   const images = [
-    'src/assets/images/bread-full01.jpeg',
     'src/assets/images/bread-full02.jpeg',
     'src/assets/images/bread-full03.jpeg',
     'src/assets/images/bread-full04.jpeg',
@@ -61,20 +60,25 @@ const Home = () => {
       <Slideshow images={images} showDots={true} fullHeight={true} />
       <header>
         <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className={styles.logo} />
-        <h2>Nyheder</h2>
       </header>
+
+      <h2 className={styles['news-heading']}>Nyheder</h2> {/* Tilføjet h2 her */}
 
       <div className={styles['news-section']}>
         <div className={styles['news-grid']}>
           {news.map((newsItem) => (
             <div key={newsItem.id} className={styles['news-item']}>
-              <p>{new Date(newsItem.created_at).toLocaleDateString()}</p>
-              <img src={newsItem.image_url} alt={newsItem.title} />
-              <h3>{newsItem.title}</h3>
-              <p>{newsItem.teaser}</p>
-              <Link to={`/nyheder/${newsItem.id}`} className={styles['read-more-button']}>
-                Read more
-              </Link>
+              <div> 
+                <img src={newsItem.image_url} alt={newsItem.title} />
+              </div>
+              <div>
+                <p>{new Date(newsItem.created_at).toLocaleDateString()}</p>
+                <h3>{newsItem.title}</h3>
+                <p>{newsItem.teaser}</p>
+                <Link to={`/nyheder/${newsItem.id}`} className={styles['read-more-button']}>
+                  Read more
+                </Link>
+              </div>
             </div>
           ))}
         </div>
