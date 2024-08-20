@@ -1,4 +1,3 @@
-
 .layout {
   display: flex;
   flex-direction: column;
@@ -16,7 +15,7 @@
   width: 100%;
   overflow: hidden;
   position: relative;
-  height: 197px; /* Justeret højde (297px - 100px) */
+  height: 197px; /* Justeret højde */
   margin: 0;
   padding: 0;
 }
@@ -58,7 +57,9 @@
   position: relative; /* For at kunne placere trekanten */
 }
 
-.menu a {
+.menu button {
+  background: none; /* Fjern baggrundsfarven */
+  border: none; /* Fjern kant */
   color: white;
   text-decoration: none;
   text-transform: uppercase; /* Sørger for at teksten vises med kapitaler */
@@ -70,15 +71,16 @@
   line-height: 28.8px; /* Justerer linjehøjden */
   text-align: center; /* Centrerer teksten */
   letter-spacing: 0.5px; /* Tilføjer lidt ekstra mellemrum mellem bogstaverne for at kompensere for den condensed effekt */
+  cursor: pointer; /* Sørger for at cursoren ændrer sig til pointer ved hover */
 }
 
-.menu a:hover,
-.menu a.active {
+.menu button:hover,
+.menu button.active {
   color: orange;
 }
 
-.menu a:hover::after,
-.menu a.active::after {
+.menu button:hover::after,
+.menu button.active::after {
   content: "";
   position: absolute;
   bottom: -10px; /* Juster afstanden til trekanten under teksten */
@@ -91,11 +93,7 @@
   border-top: 10px solid orange; /* Trekanten skal være orange */
 }
 
-
-
 .main {
   flex: 1;
   margin-top: 100px; /* Sørg for main indholdet placeres korrekt under menuen */
 }
-
-

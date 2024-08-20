@@ -1,0 +1,86 @@
+.productList {
+    padding: 1rem;
+  
+    .categories {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+  
+      button {
+        padding: 0.5rem 1rem;
+        background: #ccc;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+  
+      .active {
+        background: #ff6600;
+        color: #fff;
+      }
+    }
+  
+    .sortOptions {
+      margin-bottom: 1rem;
+      
+      select {
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+    }
+  
+    .productsGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+  
+      .productCard {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+        .productImage {
+          width: 100%;
+          height: auto;
+          border-radius: 8px;
+        }
+  
+        h3 {
+          margin: 0.5rem 0;
+        }
+  
+        .productActions {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 1rem;
+  
+          .readMore {
+            background: #ff6600;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+          }
+  
+          .likeButton {
+            background: none;
+            border: none;
+            color: gray;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+          }
+          
+          .likeButton.liked {
+            color: red; /* Highlight liked state */
+          }
+          
+        }
+      }
+    }
+  }
+  

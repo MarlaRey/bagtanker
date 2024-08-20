@@ -1,5 +1,5 @@
 // src/App.js
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Home from './Pages/Home/Home';
@@ -16,18 +16,25 @@ import Layout from './components/PageLayout/Layout';
 
 
 const App = () => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleCategoryChange = (categoryId) => {
+    setSelectedCategory(categoryId);
+  };
   return (
     <Router>
       <BurgerMenu />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/produkter" element={<Layout><ProductList /></Layout>} />
-          <Route path="/produkt/:id" element={<Layout><ProductDetails /></Layout>} />
-          <Route path="/nyheder" element={<Layout><News /></Layout>} />
-          <Route path="/kontakt" element={<Layout><Contact /></Layout>} />
-          <Route path="/login" element={<Layout><Login /></Layout>} />
-          <Route path="/nyheder/:id" element={<Layout><NewsDetail /></Layout>} />
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/produkter" element={<Layout onCategoryChange={handleCategoryChange}>
+          <ProductList selectedCategory={selectedCategory} />
+        </Layout>} />
+        <Route path="/produkt/:id" element={<Layout><ProductDetails /></Layout>} />
+        <Route path="/nyheder" element={<Layout><News /></Layout>} />
+        <Route path="/kontakt" element={<Layout><Contact /></Layout>} />
+        <Route path="/login" element={<Layout><Login /></Layout>} />
+        <Route path="/nyheder/:id" element={<Layout><NewsDetail /></Layout>} />
+      </Routes>
     </Router>
   );
 };

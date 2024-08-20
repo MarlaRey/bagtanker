@@ -1,0 +1,22 @@
+// src/components/LikeButton/LikeButton.module.scss
+.likes {
+    display: flex;
+    align-items: center;
+  }
+  
+  .likeButton {
+    background: none;
+    border: none;
+    color: #ccc; /* Default color for unliked state */
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .likeButton.liked {
+    color: #e74c3c; /* Color for liked state */
+  }
+  
+  .likes span {
+    margin-right: 8px;
+  }
+  

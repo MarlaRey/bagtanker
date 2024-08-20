@@ -41,6 +41,15 @@ Fejlhåndtering: Hvis der opstår en fejl under indsættelsen, fanger jeg den og
 Success Feedback: Hvis indsættelsen er succesfuld, viser jeg en bekræftelsesmeddelelse for at informere brugeren om, at deres email er blevet tilføjet.
 
 NAVIgations-font findes ikke.
-jeg må forsøge at løse det condensed udtryk med css. jeg googler det og finder ud af at man kan stretche. Det tilføjer jeg til min .menu a
+jeg må forsøge at løse det condensed udtryk med css. jeg googler det og finder ud af at man kan stretche. Det tilføjer jeg til min .menu a, men det virker desværre ikke.
 
+tidsplan:
+mandag: opsætning af database og projekt med navigation og hul igennem til supabase
+tirsdag: styr på gennemgående layout og styling af forside. opsætning af produkt og produktdetaljerside
+onsdag: opsætning af kontakt, login og min side. styr på se og slette beskeder fra min side
+torsdag: responsitivitet og layout
+fredag: rapport færdig.
 
+Middagsstatus tirsdag: det går godt. jeg var tideligt i gang i morges og jeg er god om formiddagen. jeg har fået lavet nogle vigtige ting og selvom nogle dumme ting kan tage lidt åndssvagt lang tid, så føler jeg mig ovenpå. Jeg skal nu til at i kast med produktsiden. det bliver spændende og jeg kan få den der filtreringsmenu til at virke. jeg tænker jeg kan bruge samme tilgang som i mediesuset. Jeg tager lige en pause og cykler ind med et par regnbukser til walter.
+
+Ahhh! den perfekte pause!! god cykeltur med frisk luft og jeg kunne se langt. aflevere regnbuklser og dermed god samvittiughed. køb af mus til egen komfort. pause fra projet til egen komfort. perfekt. Nu er jeg klar til at fortsætte projektet. jeg skal tiul at bygge produktsiden
