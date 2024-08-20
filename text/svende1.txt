@@ -53,3 +53,40 @@ fredag: rapport færdig.
 Middagsstatus tirsdag: det går godt. jeg var tideligt i gang i morges og jeg er god om formiddagen. jeg har fået lavet nogle vigtige ting og selvom nogle dumme ting kan tage lidt åndssvagt lang tid, så føler jeg mig ovenpå. Jeg skal nu til at i kast med produktsiden. det bliver spændende og jeg kan få den der filtreringsmenu til at virke. jeg tænker jeg kan bruge samme tilgang som i mediesuset. Jeg tager lige en pause og cykler ind med et par regnbukser til walter.
 
 Ahhh! den perfekte pause!! god cykeltur med frisk luft og jeg kunne se langt. aflevere regnbuklser og dermed god samvittiughed. køb af mus til egen komfort. pause fra projet til egen komfort. perfekt. Nu er jeg klar til at fortsætte projektet. jeg skal tiul at bygge produktsiden
+
+jeg kæmpede lidt med at få hentet billederne med til mine produkter, men jeg fandt ud af det til sidst. Nøglen til at få det til at fungere var:
+
+Forbindelsen til Billeddata: Brug af en select-forespørgsel, der inkluderer en images-relation, som henter filename for hvert produkt.
+
+Mapping af Data: Efter forespørgslen bliver produktdataene mappet, så de inkluderer en image_url, som kan bruges i billedvisningen.
+
+Rendering af Billeder: Billederne bliver nu korrekt rendere med den URL, der er gemt i image_url, hvilket gør det muligt at vise produktbillederne korrekt.
+
+
+Integrere kategorinavigationen i Layout-komponenten og samtidig bevare sorteringsfunktionaliteten i ProductList-komponenten. 
+
+Jeg implementerer dette uden at skabe problemer med hoisting ved at løfte kategorivalget op i Layout-komponenten og derefter passere den valgte kategori som en prop ned til ProductList-komponenten.
+
+Her er hvordan jeg implementerede det:
+
+1. Opdater Layout-komponenten
+Vi skal tilføje funktionalitet til at håndtere kategorivalg i Layout-komponenten og derefter sende den valgte kategori ned til ProductList.
+2. Opdater ProductList-komponenten
+Nu skal vi modtage den valgte kategori fra Layout-komponenten og bruge den til at filtrere produkterne.
+3. Brug Layout-komponenten
+Når du bruger Layout-komponenten i din app, skal du sørge for at sende en funktion til onCategoryChange, som vil håndtere opdateringen af den valgte kategori i ProductList.
+Layout-komponenten håndterer nu kategori-valget og sender den valgte kategori til ProductList.
+ProductList modtager selectedCategory som en prop og bruger den til at filtrere og sortere produkterne.
+Sorteringsmenuen forbliver i ProductList, hvor brugeren kan vælge at sortere efter alfabetisk orden eller popularitet.
+
+LIKE BUTTON
+
+Jeg implementerede like-funktionen i produktlisten ved at følge en todelt tilgang. Først hentede jeg produktdata med billeder fra Supabase. Derefter hentede jeg likes fra favorite_rows og brugte reduce til at tælle likes for hvert produkt. Denne tælling blev knyttet til hvert produkt.
+
+Jeg sørgede for, at loggede brugere kan like produkter, mens ikke-loggede brugere kan se antallet af likes. Ved at adskille datahentning og likes-opdatering sikrede jeg en effektiv håndtering af både visning og opdatering af likes.
+
+Justering af grid på produclist
+jeg tager et valgt om at maksimalt have Xantal tegn i teaseren og så tilføje ... hvis teksten overstiger dette. dette gør jeg for at give øjet ro og bevare ens properstioner på alle elementer i griddet.
+how to:
+Først tilføjer vi en funktion, der tjekker længden af teaser-teksten og afkorter den, hvis den er for lang.
+Inde i din map-funktion, hvor produkterne bliver renderet, kan du bruge denne funktion til at afkorte teaser-teksten. Lad os sige, at den maksimale længde skal være den samme som eksemplet du gav, altså 100 tegn. Jeg har brugt samme funktion på min forside under news.

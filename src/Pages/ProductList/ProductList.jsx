@@ -1,4 +1,3 @@
-// src/components/ProductList/ProductList.jsx
 import React, { useState, useEffect } from 'react';
 import supabase from '../../../supabase';
 import styles from './ProductList.module.scss';
@@ -9,6 +8,14 @@ const ProductList = ({ selectedCategory }) => {
   const [loading, setLoading] = useState(true);
   const [sortType, setSortType] = useState('alphabetical');
 
+  // Function to truncate text
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  };
+
   // Fetch products based on selected category and include images
   useEffect(() => {
     if (selectedCategory) {
@@ -16,7 +23,6 @@ const ProductList = ({ selectedCategory }) => {
         setLoading(true);
 
         try {
-          // Fetch products with images
           const { data: productsData, error: productsError } = await supabase
             .from('category_product_rel')
             .select(`
@@ -34,20 +40,17 @@ const ProductList = ({ selectedCategory }) => {
 
           if (productsError) throw productsError;
 
-          // Fetch all likes
           const { data: likesData, error: likesError } = await supabase
             .from('favorite_rows')
             .select('product_id');
 
           if (likesError) throw likesError;
 
-          // Calculate likes count per product
           const likesCount = likesData.reduce((acc, { product_id }) => {
             acc[product_id] = (acc[product_id] || 0) + 1;
             return acc;
           }, {});
 
-          // Combine products data with likes count
           const productsWithImagesAndLikes = productsData.map(item => ({
             ...item.products,
             image_url: item.products.images ? item.products.images.filename : null,
@@ -76,7 +79,6 @@ const ProductList = ({ selectedCategory }) => {
     setProducts(productsList);
   };
 
-  // Handle sort type change
   const handleSortChange = (event) => {
     setSortType(event.target.value);
   };
@@ -96,18 +98,20 @@ const ProductList = ({ selectedCategory }) => {
         <div className={styles.productsGrid}>
           {products.map(product => (
             <div key={product.id} className={styles.productCard}>
-              <div> 
+              <div className={styles.productImage}> 
                 <img src={product.image_url} alt={product.title} />
               </div>
-              <h3>{product.title}</h3>
-              <p>{product.teaser}</p>
-              <div className={styles.productActions}>
-                <button className={styles.readMore}>Read More</button>
-                <LikeButton
-                  productId={product.id}
-                  initialLikesCount={product.likes_count}
-                  initialLiked={false} // Assuming initial liked status is false
-                />
+              <div>
+                <h3>{product.title}</h3>
+                <p>{truncateText(product.teaser, 110)}</p>
+                <div className={styles.productActions}>
+                  <button className={styles.readMore}>Read More</button>
+                  <LikeButton
+                    productId={product.id}
+                    initialLikesCount={product.likes_count}
+                    initialLiked={false} // Assuming initial liked status is false
+                  />
+                </div>
               </div>
             </div>
           ))}

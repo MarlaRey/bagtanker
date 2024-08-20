@@ -20,6 +20,14 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+    // Function to truncate text
+    const truncateText = (text, maxLength) => {
+      if (text.length > maxLength) {
+        return text.substring(0, maxLength) + '...';
+      }
+      return text;
+    };
+
   useEffect(() => {
     const fetchNewsAndImages = async () => {
       try {
@@ -74,7 +82,7 @@ const Home = () => {
               <div>
                 <p>{new Date(newsItem.created_at).toLocaleDateString()}</p>
                 <h3>{newsItem.title}</h3>
-                <p>{newsItem.teaser}</p>
+                <p>{truncateText(newsItem.teaser, 110)}</p>
                 <Link to={`/nyheder/${newsItem.id}`} className={styles['read-more-button']}>
                   Read more
                 </Link>
