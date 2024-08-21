@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import supabase from '../../../supabase';
 import styles from './ProductList.module.scss';
 import LikeButton from '../../components/LikeButton/LikeButton';
@@ -9,6 +9,7 @@ const ProductList = ({ selectedCategory }) => {
   const [loading, setLoading] = useState(true);
   const [sortType, setSortType] = useState('alphabetical');
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Function to truncate text
   const truncateText = (text, maxLength) => {
@@ -88,6 +89,30 @@ const ProductList = ({ selectedCategory }) => {
     setSortType(event.target.value);
   };
 
+  const handleReadMore = async (productId) => {
+    try {
+      const selectedProduct = products.find(item => item.id === productId);
+
+      if (!selectedProduct) {
+        throw new Error('Selected product not found');
+      }
+
+      // Assuming images are stored in 'images' table with an 'id' that links to the product
+      // Update this to match your database schema if necessary
+      const { data: imageData, error: imageError } = await supabase
+        .from('images')
+        .select('*')
+
+      if (imageError) {
+        throw imageError;
+      }
+
+      navigate(`/product/${encodeURIComponent(selectedProduct.title)}`);
+    } catch (error) {
+      console.error('Error handling "Read more" click:', error);
+    }
+  };
+
   return (
     <div className={styles.productList}>
       <div className={styles.sortOptions}>
@@ -110,9 +135,12 @@ const ProductList = ({ selectedCategory }) => {
                 <h3>{product.title}</h3>
                 <p>{truncateText(product.teaser, 110)}</p>
                 <div className={styles.productActions}>
-                  <Link to={`/produkt/${product.id}`}>
-                    <button className={styles.readMore}>Read More</button>
-                  </Link>
+                  <button 
+                    onClick={() => handleReadMore(product.id)} 
+                    className="read-more-button"
+                  >
+                    Read more
+                  </button>
                   <LikeButton
                     productId={product.id}
                     initialLikesCount={product.likes_count}

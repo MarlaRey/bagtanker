@@ -6,7 +6,7 @@ import ProductDetails from './Pages/ProductDetails/ProductDetails';
 import News from './Pages/News/News';
 import Contact from './Pages/Contact/Contact';
 import BurgerMenu from './components/BurgerMenu/BurgerMenu';
-import NewsDetail from './Pages/News/NewsDetail';
+import NewsDetail from './Pages/NewsDetail/NewsDetail';
 import Layout from './components/PageLayout/Layout';
 import Login from './Pages/Login/Login';
 import { AuthProvider } from './context/AuthContext';
@@ -28,7 +28,7 @@ const App = () => {
           <Route path="/produkter" element={<Layout onCategoryChange={handleCategoryChange}>
             <ProductList selectedCategory={selectedCategory} />
           </Layout>} />
-          <Route path="/produkt/:id" element={<Layout><ProductDetails /></Layout>} />
+          <Route path="/product/:title" element={<Layout><ProductDetails/></Layout>} />
           <Route path="/nyheder" element={<Layout><News /></Layout>} />
           <Route path="/kontakt" element={<Layout><Contact /></Layout>} />
           <Route path="/login" element={<Layout><Login /></Layout>} />
