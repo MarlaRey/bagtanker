@@ -11,23 +11,31 @@ const LikeButton = ({ productId, initialLikesCount, initialLiked, onUpdate }) =>
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      
-      if (user) {
-        // Check if user has already liked the product
-        const { data: favorite, error } = await supabase
-          .from('favorite_rows')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('product_id', productId)
-          .single();
+      if (isLoggedIn) {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
 
-        if (favorite) {
-          setLiked(true);
+        if (user) {
+          // Check if user has already liked the product
+          const { data: favorite, error } = await supabase
+            .from('favorite_rows')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('product_id', productId)
+            .single();
+
+          if (error) {
+            console.error('Error fetching favorite status', error);
+          } else {
+            setLiked(!!favorite);
+          }
         }
+      } else {
+        // For non-logged-in users, reset the liked status
+        setLiked(false);
       }
     };
+
     fetchUser();
   }, [isLoggedIn, productId]);
 
@@ -73,7 +81,6 @@ const LikeButton = ({ productId, initialLikesCount, initialLiked, onUpdate }) =>
       <button
         onClick={handleLike}
         className={`${styles.likeButton} ${liked ? styles.liked : ''}`}
-        disabled={liked && !isLoggedIn} // Disable button if already liked
       >
         {liked ? '❤️' : '🤍'}
       </button>

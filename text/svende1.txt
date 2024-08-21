@@ -1,3 +1,23 @@
+Rapport 
+Du skal udarbejde en projektrapport sammen med opgaveløsningen. Projektrapporten
+skal indeholde følgende: 
+• Vurdering af din egen indsats og gennemførelse af prøven.
+• Argumentation for de valg du har truffet under løsningen af opgaven.
+• Redegørelse for oprindelsen af de forskellige kodeelementer i prøven.
+• Fremhævelse af eventuelle særlige punkter til bedømmelse.
+• Angivelse af url adresser, brugernavne og passwords der er nødvendige for at 
+lærer og censor kan se opgaven.
+• Eventuelle bilag
+Forsiden af rapporten skal indeholde:
+• opgavens navn
+• dit navn og holdnummer
+• URL til GitHub repository
+• Brugernavn/adgangskoder
+Omfanget af rapporten skal være på maksimum fem A4-sider eksklusive bilag.
+Projektrapporten navngives med dit navn plus rapport og afleveres som en pdf-fil
+eller en markdown fil i dit Github repository. 
+Eksempel: dit_navn_rapport_bagtanker.pdf.
+
 Mandag
 jeg var spændt på om jeg kunne bruge noget fra mediesuset, det kunne jeg. men der er lige lidt forventeligt opstartsknas. man skal mange ting igennem når man sætter sådan et projekt her op. ruter og hierakier er vigtige, for ikke at tale om relationerne i supabase og tvivlen om hvorvidt man nu gør det rigtigt med den datsabase. men jeg har fået hul igennem til nogle news og tilhørende billeder på forsiden så nu er vi i gang. 
 
@@ -85,8 +105,59 @@ Jeg implementerede like-funktionen i produktlisten ved at følge en todelt tilga
 
 Jeg sørgede for, at loggede brugere kan like produkter, mens ikke-loggede brugere kan se antallet af likes. Ved at adskille datahentning og likes-opdatering sikrede jeg en effektiv håndtering af både visning og opdatering af likes.
 
+Brug af AuthContext:
+
+Vi bruger useContext til at hente login-status (isLoggedIn) fra AuthContext. Dette gør det nemt at vide, om brugeren er logget ind eller ej.
+Hvis brugeren ikke er logget ind, vises en advarsel, og like-handlingen bliver afbrudt.
+Re-fetch user info ved login status ændring:
+
+Vi tilføjer isLoggedIn som en afhængighed i useEffect, hvilket sikrer, at brugerinformationer bliver opdateret, hvis login-status ændrer sig (f.eks. efter login eller logout).
+Alert ved ikke-logget ind tilstand:
+
+Hvis isLoggedIn er false, får brugeren en besked om, at de skal logge ind for at like produkter.
+Check for eksisterende like:
+
+Ved hjælp af useEffect, når komponenten loader, checker vi, om der allerede findes en post i favorite_rows for det givne productId og bruger. Hvis posten findes, sætter vi liked til true.
+Disable knap hvis allerede liket:
+
+Hvis produktet allerede er liket, vil knappen blive deaktiveret, og brugeren vil ikke kunne like det igen.
+
 Justering af grid på produclist
 jeg tager et valgt om at maksimalt have Xantal tegn i teaseren og så tilføje ... hvis teksten overstiger dette. dette gør jeg for at give øjet ro og bevare ens properstioner på alle elementer i griddet.
 how to:
 Først tilføjer vi en funktion, der tjekker længden af teaser-teksten og afkorter den, hvis den er for lang.
 Inde i din map-funktion, hvor produkterne bliver renderet, kan du bruge denne funktion til at afkorte teaser-teksten. Lad os sige, at den maksimale længde skal være den samme som eksemplet du gav, altså 100 tegn. Jeg har brugt samme funktion på min forside under news.
+
+Jeg tror det er et fint tidspunkt at holde for i dag. jeg føler jeg har arbejdet rigtig godt og har brugt tiden fornuftigt. formiddagen er klart min bedste tid. jeg er ikke stødt på væsentlige problmer og føler jeg hurtigt for løst de bump der kommer på vejen. jeg har besluttet mig for at style og lave responsivitet løbende, fordi den slags godt kan drille, og tage længere tid end forventet. så heller tage det lidt hen ad vejen og gøre komponenterne helt færdige en for en. 
+
+I morgen vil jeg lave login og få det til at spille sammen med likes på products samt lave productdetails med plads til brugerkommentarer.
+--------------
+
+så er det onsdag morgen og kl er 7.15. jeg har sovet elendigt, så er spændt på om det vil have en effekt på dagens arbejde.
+
+oprettelse af login og authprovider.
+
+MIN SIDE!
+Jeg tager et valg om at føje de produkter man liker til minSide, jeg synes det giver bedre mening med en personlig opskrifts-database end en kommentardatabase. Når man liker et produkt gemmes denne på min side. her ligger den som et link til produktet som man kan tilgå eller slette. 
+
+Categori-menu
+jeg har et problem med at kategorimenuen som er synlig på alle sider kun fungerer i productList. Jeg vil have det sådan at hvis jeg eksempelvis står i kontakt og trykker "franskbrød" så navigeres jeg til ProductList med den valgte kategori som URL-parameter. Men jeg kan ikke få det til at virke. Jeg prøver forskellige ting (eksempelr her) men kommer såp i tanker om at bruge en turnery operater:
+Forklaring
+useNavigate: useNavigate fra react-router-dom bruges til at navigere til en ny rute programmatisk.
+handleCategoryClick:
+Hvis du ikke er på /produkter, naviger til /produkter med den valgte kategori som en URL-parameter.
+Hvis du allerede er på /produkter, opdaterer du blot selectedCategory og kalder onCategoryChange for at opdatere produktlisten.
+Jeg løser problemet delvist, men får ikke vist den kategori jeg klikker på, jeg ændrer derfor lidt:
+  const handleCategoryClick = (categoryId) => {
+    if (location.pathname !== '/produkter') {
+      // Hvis vi ikke er på /produkter, naviger til /produkter med valgt kategori
+      navigate(`/produkter?`);
+      setSelectedCategory(categoryId);
+      onCategoryChange(categoryId); // Send valgte kategori til ProductList
+    } else {
+      // Hvis vi allerede er på /produkter, opdater valgt kategori
+      setSelectedCategory(categoryId);
+      onCategoryChange(categoryId); // Send valgte kategori til ProductList
+    }
+  };
+men dette gør at når jeg navigerer tilbage får jeg vist den kategori jeg havde fremme før jeg navigerede væk fra productlist, jeg ændrer derfor idt igen, men det vil ikke virke. jeg dropper det for nu og går vidree, da det virker i grove træk og jeg har andet jeg skal nå.

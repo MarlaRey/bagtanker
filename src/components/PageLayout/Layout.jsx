@@ -1,6 +1,6 @@
 // src/components/Layout/Layout.js
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Slideshow from '../Slideshow/Slideshow';
 import BurgerMenu from '../BurgerMenu/BurgerMenu';
 import Footer from '../Footer/Footer'; 
@@ -13,6 +13,7 @@ const Layout = ({ children, onCategoryChange }) => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const fetchCategories = async () => {
@@ -37,8 +38,16 @@ const Layout = ({ children, onCategoryChange }) => {
   }, []);
 
   const handleCategoryClick = (categoryId) => {
-    setSelectedCategory(categoryId);
-    onCategoryChange(categoryId); // Send valgte kategori til ProductList
+    if (location.pathname !== '/produkter') {
+      // Hvis vi ikke er på /produkter, naviger til /produkter med valgt kategori
+      navigate(`/produkter?${categoryId}`);
+      setSelectedCategory(categoryId);
+      onCategoryChange(categoryId); // Send valgte kategori til ProductList
+    } else {
+      // Hvis vi allerede er på /produkter, opdater valgt kategori
+      setSelectedCategory(categoryId);
+      onCategoryChange(categoryId); // Send valgte kategori til ProductList
+    }
   };
 
   return (
