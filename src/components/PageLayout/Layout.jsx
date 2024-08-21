@@ -1,4 +1,3 @@
-// src/components/Layout/Layout.js
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Slideshow from '../Slideshow/Slideshow';
@@ -50,6 +49,19 @@ const Layout = ({ children, onCategoryChange }) => {
     }
   };
 
+  // Function to generate breadcrumb links
+  const getBreadcrumbs = () => {
+    const pathnames = location.pathname.split('/').filter((x) => x);
+    const breadcrumbs = pathnames.map((path, index) => {
+      const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+      return { path, to };
+    });
+
+    return breadcrumbs;
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
@@ -82,7 +94,17 @@ const Layout = ({ children, onCategoryChange }) => {
           </button>
         ))}
       </nav>
+      <div className={styles.breadcrumbs}>
+          <p>Du er her: Home / {breadcrumbs.map((breadcrumb, index) => (
+            <React.Fragment key={breadcrumb.to}>
+              <Link to={breadcrumb.to}className={styles.link}>{breadcrumb.path}</Link>
+              {index < breadcrumbs.length - 1 && ' / '}
+            </React.Fragment>
+          ))}</p>
+          <h2>{breadcrumbs[breadcrumbs.length - 1]?.path || 'Home'}</h2>
+        </div>
       <main className={styles.main}>
+
         {children}
       </main>
       <Footer />
