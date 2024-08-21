@@ -51,7 +51,6 @@ const Layout = ({ children, onCategoryChange }) => {
       // Hvis vi ikke er på /produkter, naviger til /produkter med valgt kategori
       navigate(`/produkter?${categoryId}`);
       setSelectedCategory(categoryId);
-      onCategoryChange(categoryId); // Send valgte kategori til ProductList
     } else {
       // Hvis vi allerede er på /produkter, opdater valgt kategori
       setSelectedCategory(categoryId);
