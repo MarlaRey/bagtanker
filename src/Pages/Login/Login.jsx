@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import supabase from '../../../supabase';
 import { AuthContext } from '../../context/AuthContext';
+import styles from './Login.module.scss'; // Import the updated CSS
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,12 +11,12 @@ const Login = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false); // State to toggle between login and register
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setError(error.message);
@@ -32,7 +33,6 @@ const Login = () => {
 
   const handleRegister = async (event) => {
     event.preventDefault();
-  
     const { error } = await supabase.auth.signUp({ email: registerEmail, password: registerPassword });
     if (error) {
       setError(error.message);
@@ -45,58 +45,85 @@ const Login = () => {
     }
   };
 
-  return (
-    <div>
-      <img src="src/assets/images/banner_blue.png" alt="mediesuset" />
-      <form onSubmit={handleLogin}>
-        <h2>Log ind</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {success && <p style={{ color: 'green' }}>{success}</p>}
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Log ind</button>
-      </form>
+  return (   <div className={styles.mainContainer}>
+    <div className={styles.loginContainer}>
 
-      <form onSubmit={handleRegister}>
-        <h2>Opret ny bruger</h2>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={registerEmail}
-            onChange={(e) => setRegisterEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={registerPassword}
-            onChange={(e) => setRegisterPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Opret bruger</button>
-      </form>
+     
+      {error && <p className={styles.error}>{error}</p>}
+      {success && <p className={styles.success}>{success}</p>}
+      
+      {!isRegistering ? (
+        <form className={styles.form} onSubmit={handleLogin}>
+           <p className={styles.infoText}>Indtast email og password for at logge ind.</p>
+          <div className={styles.formGroup}>
+
+            <input
+            placeholder='Email'
+              type="email"
+              className={styles.input}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+
+            <input
+            placeholder='Password'
+              type="password"
+              className={styles.input}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className={styles.button}>Log ind</button>
+          <button
+            type="button"
+            className={`${styles.button} ${styles.registerButton}`}
+            onClick={() => setIsRegistering(true)}
+          >
+            Opret bruger
+          </button>
+        </form>
+      ) : (
+        <form className={styles.form} onSubmit={handleRegister}>
+                     <p className={styles.infoText}>Opret dig som bruger her</p>
+
+          <div className={styles.formGroup}>
+            <input
+            placeholder='Email'
+              type="email"
+              className={styles.input}
+              value={registerEmail}
+              onChange={(e) => setRegisterEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+
+            <input
+            placeholder='password'
+              type="password"
+              className={styles.input}
+              value={registerPassword}
+              onChange={(e) => setRegisterPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className={styles.button}>Opret</button>
+          <button
+            type="button"
+            className={styles.button}
+            onClick={() => setIsRegistering(false)}
+          >
+            Tilbage til login
+          </button>
+        </form>
+      )}
+    </div>
     </div>
   );
-}
+};
 
 export default Login;
