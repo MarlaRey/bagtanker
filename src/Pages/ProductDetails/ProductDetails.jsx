@@ -1,48 +1,47 @@
-import React from 'react';
-import './ProductDetails.module.scss';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import supabase from '../../../supabase';
 
 const ProductDetails = () => {
-  const product = {
-    title: 'Surdejsbrød',
-    description: 'Dette er en detaljeret beskrivelse af surdejsbrødet.',
-    recipe: '500g mel, 300g vand, 100g surdej...'
-  };
+    const { id } = useParams();
+    const [product, setProduct] = useState(null);
+    const [image, setImage] = useState(null);
+    const [error, setError] = useState(null);
 
-  return (
-    <div className="product-details">
-      <h2>{product.title}</h2>
-      <img src="/images/surdejsbrod.jpg" alt={product.title} />
-      <p>{product.description}</p>
-      <div className="recipe-box">
-        <h3>Opskrift</h3>
-        <p>{product.recipe}</p>
-        <button>❤️ Like</button>
-      </div>
-      <CommentsSection />
-    </div>
-  );
-};
+    useEffect(() => {
+        const fetchProductDetails = async () => {
+            try {
+                if (!id) return; // Ensures id is valid
 
-const CommentsSection = () => {
-  const comments = [
-    { user: 'Bruger1', comment: 'Dette brød er fantastisk!' },
-    { user: 'Bruger2', comment: 'Jeg vil prøve opskriften i weekenden.' }
-  ];
+                const { data: productData, error: productError } = await supabase
+                    .from('products')
+                    .select('id, title, description, image_id')
+                    .eq('id', id)
+                    .single();
 
-  return (
-    <div className="comments-section">
-      <h3>Kommentarer</h3>
-      {comments.map((comment, index) => (
-        <div key={index} className="comment">
-          <p><strong>{comment.user}</strong>: {comment.comment}</p>
+                if (productError) throw productError;
+
+                setProduct(productData);
+
+    
+            } catch (err) {
+                setError(err.message);
+            }
+        };
+
+        fetchProductDetails();
+    }, [id]);
+
+    if (error) return <div>Error: {error}</div>;
+    if (!product) return <div>Loading...</div>;
+
+    return (
+        <div>
+            <h1>{product.title}</h1>
+            <p>{product.description}</p>
+
         </div>
-      ))}
-      <form>
-        <textarea placeholder="Skriv en kommentar..." required></textarea>
-        <button type="submit">Tilføj kommentar</button>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default ProductDetails;

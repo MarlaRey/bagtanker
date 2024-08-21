@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
-import styles from './Login.module.scss'; // Import CSS modules
-import supabase from '../../../supabase.js';
-import { AuthContext } from '../../context/AuthContext'; // Kommentér dette ind hvis AuthContext er implementeret
+import { useNavigate } from 'react-router-dom'; 
+import supabase from '../../../supabase';
+import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,37 +10,35 @@ const Login = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { setIsLoggedIn } = useContext(AuthContext); // Kommentér dette ind hvis AuthContext er implementeret
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setError(error.message);
       setSuccess("");
     } else {
-      setSuccess("Du er nu logget ind!");
+      setSuccess(`You have logged in successfully!`);
       setError("");
       setEmail("");
       setPassword("");
-      setIsLoggedIn(true); // Kommentér dette ind hvis AuthContext er implementeret
+      login();
+      navigate('/minside');
     }
   };
 
   const handleRegister = async (event) => {
     event.preventDefault();
   
-    const { data, error } = await supabase.auth.signUp({ email: registerEmail, password: registerPassword });
+    const { error } = await supabase.auth.signUp({ email: registerEmail, password: registerPassword });
     if (error) {
-      if (error.message === 'Email rate limit exceeded') {
-        setError('For mange forsøg. Prøv igen senere.');
-      } else {
-        setError(error.message);
-      }
+      setError(error.message);
       setSuccess("");
     } else {
-      setSuccess("Din konto er oprettet! Tjek venligst din email for at bekræfte.");
+      setSuccess(`Account created successfully! Please check your email for verification.`);
       setError("");
       setRegisterEmail("");
       setRegisterPassword("");
@@ -48,59 +46,54 @@ const Login = () => {
   };
 
   return (
-    <div className={styles.loginContainer}>
-      <img src="src/assets/images/banner_blue.png" alt="mediesuset" className={styles.bannerImage} />
-
-      <form onSubmit={handleLogin} className={styles.form}>
+    <div>
+      <img src="src/assets/images/banner_blue.png" alt="mediesuset" />
+      <form onSubmit={handleLogin}>
         <h2>Log ind</h2>
-        {error && <p className={styles.error}>{error}</p>}
-        {success && <p className={styles.success}>{success}</p>}
-        <div className={styles.formGroup}>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
+        <div>
           <label>Email:</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className={styles.input}
           />
         </div>
-        <div className={styles.formGroup}>
+        <div>
           <label>Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className={styles.input}
           />
         </div>
-        <button type="submit" className={styles.button}>Log ind</button>
+        <button type="submit">Log ind</button>
       </form>
 
-      <form onSubmit={handleRegister} className={styles.form}>
+      <form onSubmit={handleRegister}>
         <h2>Opret ny bruger</h2>
-        <div className={styles.formGroup}>
+        <div>
           <label>Email:</label>
           <input
             type="email"
             value={registerEmail}
             onChange={(e) => setRegisterEmail(e.target.value)}
             required
-            className={styles.input}
           />
         </div>
-        <div className={styles.formGroup}>
+        <div>
           <label>Password:</label>
           <input
             type="password"
             value={registerPassword}
             onChange={(e) => setRegisterPassword(e.target.value)}
             required
-            className={styles.input}
           />
         </div>
-        <button type="submit" className={styles.button}>Opret bruger</button>
+        <button type="submit">Opret bruger</button>
       </form>
     </div>
   );

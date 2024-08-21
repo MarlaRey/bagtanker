@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import supabase from '../../../supabase';
 import styles from './ProductList.module.scss';
 import LikeButton from '../../components/LikeButton/LikeButton';
@@ -7,6 +8,7 @@ const ProductList = ({ selectedCategory }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortType, setSortType] = useState('alphabetical');
+  const location = useLocation();
 
   // Function to truncate text
   const truncateText = (text, maxLength) => {
@@ -18,11 +20,14 @@ const ProductList = ({ selectedCategory }) => {
 
   // Fetch products based on selected category and include images
   useEffect(() => {
-    if (selectedCategory) {
-      const fetchProducts = async () => {
-        setLoading(true);
+    const fetchProducts = async () => {
+      setLoading(true);
 
-        try {
+      try {
+        const urlParams = new URLSearchParams(location.search);
+        const category = urlParams.get('category') || selectedCategory;
+
+        if (category) {
           const { data: productsData, error: productsError } = await supabase
             .from('category_product_rel')
             .select(`
@@ -36,7 +41,7 @@ const ProductList = ({ selectedCategory }) => {
                 )
               )
             `)
-            .eq('category_id', selectedCategory);
+            .eq('category_id', category);
 
           if (productsError) throw productsError;
 
@@ -58,16 +63,16 @@ const ProductList = ({ selectedCategory }) => {
           }));
 
           sortProducts(productsWithImagesAndLikes);
-        } catch (error) {
-          console.error('Error fetching products or likes', error);
-        } finally {
-          setLoading(false);
         }
-      };
+      } catch (error) {
+        console.error('Error fetching products or likes', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchProducts();
-    }
-  }, [selectedCategory, sortType]);
+    fetchProducts();
+  }, [selectedCategory, sortType, location.search]);
 
   // Function to sort the products based on the selected sort type
   const sortProducts = (productsList) => {
@@ -98,14 +103,16 @@ const ProductList = ({ selectedCategory }) => {
         <div className={styles.productsGrid}>
           {products.map(product => (
             <div key={product.id} className={styles.productCard}>
-              <div className={styles.productImage}> 
+              <div className={styles.productImage}>
                 <img src={product.image_url} alt={product.title} />
               </div>
               <div>
                 <h3>{product.title}</h3>
                 <p>{truncateText(product.teaser, 110)}</p>
                 <div className={styles.productActions}>
-                  <button className={styles.readMore}>Read More</button>
+                  <Link to={`/produkt/${product.id}`}>
+                    <button className={styles.readMore}>Read More</button>
+                  </Link>
                   <LikeButton
                     productId={product.id}
                     initialLikesCount={product.likes_count}

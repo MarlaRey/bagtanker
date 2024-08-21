@@ -1,25 +1,38 @@
-// src/components/LikeButton/LikeButton.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import supabase from '../../../supabase';
 import styles from './LikeButton.module.scss';
+import { AuthContext } from '../../context/AuthContext';
 
 const LikeButton = ({ productId, initialLikesCount, initialLiked, onUpdate }) => {
   const [likesCount, setLikesCount] = useState(initialLikesCount);
   const [liked, setLiked] = useState(initialLiked);
-  const [user, setUser] = useState(null); // For user authentication
+  const { isLoggedIn } = useContext(AuthContext); // Get login status from AuthContext
+  const [user, setUser] = useState(null);
 
-  // Fetch the current user
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      
+      if (user) {
+        // Check if user has already liked the product
+        const { data: favorite, error } = await supabase
+          .from('favorite_rows')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('product_id', productId)
+          .single();
+
+        if (favorite) {
+          setLiked(true);
+        }
+      }
     };
     fetchUser();
-  }, []);
+  }, [isLoggedIn, productId]);
 
-  // Handle like/unlike functionality
   const handleLike = async () => {
-    if (!user) {
+    if (!isLoggedIn) {
       alert('Please log in to like products.');
       return;
     }
@@ -36,18 +49,19 @@ const LikeButton = ({ productId, initialLikesCount, initialLiked, onUpdate }) =>
         if (error) throw error;
 
         setLikesCount(likesCount - 1);
+        setLiked(false);
       } else {
-        // Like the product
-        const { error } = await supabase
+        // Like the product only if not already liked
+        const { data, error } = await supabase
           .from('favorite_rows')
           .insert({ user_id: user.id, product_id: productId });
 
         if (error) throw error;
 
         setLikesCount(likesCount + 1);
+        setLiked(true);
       }
-      setLiked(!liked);
-      if (onUpdate) onUpdate(); // Notify parent component of update
+      if (onUpdate) onUpdate();
     } catch (error) {
       console.error('Error liking/unliking product', error);
     }
@@ -59,6 +73,7 @@ const LikeButton = ({ productId, initialLikesCount, initialLiked, onUpdate }) =>
       <button
         onClick={handleLike}
         className={`${styles.likeButton} ${liked ? styles.liked : ''}`}
+        disabled={liked && !isLoggedIn} // Disable button if already liked
       >
         {liked ? '❤️' : '🤍'}
       </button>
