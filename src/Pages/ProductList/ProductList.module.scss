@@ -34,8 +34,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+   
 
     .productCard {
+       margin: 1rem;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
@@ -91,8 +93,11 @@
 
 @media (max-width: 1000px) {
   .productsGrid {
+   
     grid-template-columns: 1fr !important;
     .productCard {
+      margin-right: 1rem;
+      margin-left: 1rem;
       grid-template-columns: 1fr !important;
       .productImage img {
         width: 90vw !important;

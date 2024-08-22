@@ -1,8 +1,9 @@
+// src/components/Layout/Layout.module.scss
+
 .layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-
 }
 
 .header {
@@ -12,14 +13,10 @@
   padding: 0;
 }
 
-
-
 .logo {
   position: absolute;
   z-index: 1000;
-  /* Sørg for at logoet er synligt ovenpå slideshowet */
   width: 20%;
-
   top: 27px;
   left: 41.03px;
   opacity: 1;
@@ -30,52 +27,46 @@
   min-height: 100px;
   display: flex;
   justify-content: center;
-  /* Centrerer menupunkterne i midten */
   align-items: center;
   padding: 0 20px;
   color: white;
   position: relative;
-}
 
-.menu button {
-  background: none;
-  /* Fjern baggrundsfarven */
-  border: none;
-  /* Fjern kant */
-  color: white;
-  text-decoration: none;
-  text-transform: uppercase;
-  /* Sørger for at teksten vises med kapitaler */
-  padding: 0 1rem;
-  /* Tilføjer polstring omkring teksten */
-  position: relative;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 20px;
-  font-weight: 100;
-  line-height: 28.8px;
-  text-align: center;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  /* Sørger for at cursoren ændrer sig til pointer ved hover */
-}
+  button {
+    background: none;
+    border: none;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 0 1rem;
+    position: relative;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 100;
+    line-height: 28.8px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    cursor: pointer;
 
-.menu button:hover,
-.menu button.active {
-  color: orange;
-}
+    &:hover,
+    &.active {
+      color: orange;
+    }
 
-.menu button:hover::after,
-.menu button.active::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid orange;
+    &:hover::after,
+    &.active::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid orange;
+    }
+  }
 }
 
 .main {
@@ -87,51 +78,60 @@
   max-width: 1205px;
 }
 
-@media (max-width: 1000px) {
-  .layout {
-    min-width: 100vw;
-    .logo {
-      width: 50%;
-    }
-    .menu button:hover::after,
-    .menu button.active::after {
-      content: "";
-      display: none;
-    }
-  }
-  .menu {
-    display: flex;
-    flex-direction: column;
-  }
-  .main {
-    margin-top: 1rem;
-  }
-
-}
 .breadcrumbs {
   display: flex;
   flex-direction: column;
-text-align: left;
-margin: auto;
-margin-top: 2rem;
-padding-left: 1rem;
- width: 1205px;
- .link{
-  text-decoration: none;
-  color: black;
- }
+  text-align: left;
+  margin: auto;
+  margin-top: 2rem;
+  padding-left: 1rem;
+  width: 1205px;
+
+  .link {
+    text-decoration: none;
+    color: black;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  h2 {
+    margin-top: 1rem;
+    font-size: 30px;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-transform: capitalize; // Capitalizes the first letter of each word
+  }
 }
 
-.breadcrumbs p {
-  margin: 0;
-  font-size: 16px;
-}
+@media (max-width: 1000px) {
+  .layout {
+    width: 100vw;
 
-.breadcrumbs h2 {
-  margin-top: 1rem;
-  font-size: 30px;
-  margin-bottom: 1rem;
-  font-weight: bold;
-  text-transform: capitalize; // This ensures the first letter of each word is capitalized
+    .logo {
+      width: 50%;
+    }
 
+    .menu {
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: end;
+
+
+      button {
+
+        &:hover::after,
+        &.active::after {
+          display: none;
+        }
+      }
+    }
+
+    .main {
+      width: 100vw;
+      margin-top: 1rem;
+    }
+  }
 }

@@ -1,4 +1,5 @@
 // src/components/Footer/Footer.module.scss
+
 .footer {
   display: flex;
   justify-content: space-between;
@@ -9,92 +10,85 @@
   padding: 3rem;
   box-sizing: border-box;
   margin-top: 2rem;
-}
 
-.leftSide {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+  .leftSide {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  
+    .logo {
+      width: 150px;
+      height: auto;
+    }
+  
+    address {
+      font-size: 18px;
+      font-style: normal; // Fjerner kursiv
+  
+      a {
+        color: inherit; // Arver farven fra adressen
+        text-decoration: none; // Fjerner understregning
+      }
+    }
+  }
 
-.logo {
-  width: 150px;
-  /* Juster efter behov */
-  height: auto;
-}
-
-address {
-  font-size: 18px;
-  font-style: normal;
-  /* Fjerner kursiv */
-
-  a {
-    color: inherit;
-    /* Arver farven fra den overordnede container (i dette tilfælde vil det være farven på adressen) */
-    text-decoration: none;
-    /* Fjerner understregning */
+  .rightSide {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px;
+  
+    p {
+      text-align: right;
+      margin-bottom: 2rem;
+    }
+  
+    h2 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 500;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+  
+      input {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        width: 80%;
+        margin-left: auto;
+      }
+  
+      button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #5F657B;
+        text-transform: uppercase; // Tekst med kapitaler
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        width: 50%;
+        margin-left: auto;
+        font-weight: 100;
+      }
+    }
+  
+    .error {
+      color: red;
+    }
+  
+    .success {
+      color: green;
+    }
   }
 }
 
-
-.rightSide {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 600px;
-
-  /* Juster efter behov */
-  p {
-    text-align: right;
-    margin-bottom: 2rem;
-  }
-}
-
-.rightSide h2 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 500;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-input {
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  padding: 0.8rem;
-  width: 80%;
-  margin-left: auto;
-}
-
-footer button {
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: #5F657B;
-  text-transform: uppercase;
-  /* Sørger for at teksten vises med kapitaler */
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  width: 50%;
-  margin-left: auto;
-  font-weight: 100;
-}
-
-.error {
-  color: red;
-}
-
-.success {
-  color: green;
-}
-
+// Medieforespørgsel for mindre skærme
 @media (max-width: 1000px) {
   .footer {
     height: 100%;
@@ -102,27 +96,38 @@ footer button {
     gap: 1rem;
     align-items: center;
 
-    address {
-      text-align: center;
-      margin-bottom: 1rem;
+    .leftSide {
+      address {
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      .logo {
+        place-self: center;
+      }
     }
 
-    .logo {
-      place-self: center;
-    }
+    .rightSide {
+      p {
+        text-align: center;
+        margin-bottom: 1rem;
+      }
 
-    .rightSide p {
-      text-align: center;
-      margin-bottom: 1rem;
-      ;
-    }
+      h2 {
+        font-size: 1.5rem;
+        text-align: center;
+        color: orange;
+      }
 
-    input {
-      width: 100%;
-    }
-
-    footer button {
-      width: 100%;
+      form {
+        input {
+          width: 100%;
+        }
+  
+        button {
+          width: 100%;
+        }
+      }
     }
   }
 }

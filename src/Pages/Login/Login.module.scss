@@ -1,3 +1,5 @@
+// src/components/Login/Login.module.scss
+
 .mainContainer {
   display: flex;
   width: 1200px;
@@ -20,39 +22,38 @@
 .form {
   display: flex;
   flex-direction: column;
-}
 
-.formGroup {
-  margin-bottom: 15px;
-}
-
-.input {
-  width: 400px;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ececec;
-  background-color: #f9f9f9;
-}
-
-
-.button {
-  margin-right: auto;
-  width: 48%;
-  padding: 10px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  margin-top: 10px;
-  background-color: #5f657b;
-  color: white;
-
-  &:hover {
-    opacity: 0.8;
+  .formGroup {
+    margin-bottom: 15px;
   }
-}
 
-.registerButton {
-  background-color: orange;
+  .input {
+    width: 400px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ececec;
+    background-color: #f9f9f9;
+  }
+
+  .button {
+    margin-right: auto;
+    width: 48%;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #5f657b;
+    color: white;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .registerButton {
+    background-color: orange;
+  }
 }
 
 .error {
@@ -64,3 +65,19 @@
   color: green;
   margin-bottom: 10px;
 }
+@media (max-width: 1000px) {
+  .loginContainer {
+    top: 109px;
+    left: 0;
+    margin: 1rem;
+    width: 100vw; /* Sørg for, at sektionen fylder hele bredden */
+    .button {
+      margin-right: auto;
+      width: 90vw;
+    }
+    .input {
+      width: 90vw;
+
+    }
+
+  }}
