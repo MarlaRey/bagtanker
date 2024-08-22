@@ -97,8 +97,6 @@ const ProductList = ({ selectedCategory }) => {
         throw new Error('Selected product not found');
       }
 
-      // Assuming images are stored in 'images' table with an 'id' that links to the product
-      // Update this to match your database schema if necessary
       const { data: imageData, error: imageError } = await supabase
         .from('images')
         .select('*')
@@ -137,7 +135,7 @@ const ProductList = ({ selectedCategory }) => {
                 <div className={styles.productActions}>
                   <button 
                     onClick={() => handleReadMore(product.id)} 
-                    className="read-more-button"
+                    className={styles.readMore}
                   >
                     Read more
                   </button>

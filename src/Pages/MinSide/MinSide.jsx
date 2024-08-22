@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import supabase from '../../../supabase';
 import { AuthContext } from '../../context/AuthContext';
-import styles from './MinSide.module.scss'; // Juster importen af styles hvis nødvendigt
+import styles from './MinSide.module.scss';
+import LikeButton from '../../components/LikeButton/LikeButton';
 
 const MinSide = () => {
   const [likedProducts, setLikedProducts] = useState([]);
@@ -14,12 +16,11 @@ const MinSide = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      // Fetch the logged-in user
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
 
       if (user) {
-        // Fetch the list of liked product IDs from favorite_rows
+        // Fetch liked products
         const { data: favorites, error: favoriteError } = await supabase
           .from('favorite_rows')
           .select('product_id')
@@ -30,7 +31,6 @@ const MinSide = () => {
           return;
         }
 
-        // If there are liked products, fetch their details from the products table
         if (favorites.length > 0) {
           const productIds = favorites.map(favorite => favorite.product_id);
 
@@ -46,10 +46,10 @@ const MinSide = () => {
           }
         }
 
-        // Fetch user comments
+        // Fetch user comments and join with product titles
         const { data: comments, error: commentsError } = await supabase
           .from('user_comments')
-          .select('*')
+          .select('*, products(title)')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
@@ -66,6 +66,36 @@ const MinSide = () => {
     }
   }, [isLoggedIn]);
 
+  const handleUnlike = async () => {
+    // Refresh liked products after unlike action
+    const { data: favorites, error: favoriteError } = await supabase
+      .from('favorite_rows')
+      .select('product_id')
+      .eq('user_id', user.id);
+
+    if (favoriteError) {
+      console.error('Error fetching liked products', favoriteError);
+      return;
+    }
+
+    if (favorites.length > 0) {
+      const productIds = favorites.map(favorite => favorite.product_id);
+
+      const { data: products, error: productError } = await supabase
+        .from('products')
+        .select('*')
+        .in('id', productIds);
+
+      if (productError) {
+        console.error('Error fetching products', productError);
+      } else {
+        setLikedProducts(products);
+      }
+    } else {
+      setLikedProducts([]);
+    }
+  };
+
   const handleEditClick = (comment) => {
     setEditingCommentId(comment.id);
     setEditedComment(comment.comment);
@@ -78,7 +108,6 @@ const MinSide = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    
     try {
       const { error } = await supabase
         .from('user_comments')
@@ -91,10 +120,9 @@ const MinSide = () => {
         setIsEditing(false);
         setEditingCommentId(null);
         setEditedComment('');
-        // Refresh user comments
         const { data: comments, error: commentsError } = await supabase
           .from('user_comments')
-          .select('*')
+          .select('*, products(title)')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
@@ -110,7 +138,7 @@ const MinSide = () => {
   };
 
   const handleDeleteClick = async (commentId) => {
-    if (window.confirm('Are you sure you want to delete this comment?')) {
+    if (window.confirm('Er du sikker på, at du vil slette denne kommentar?')) {
       try {
         const { error } = await supabase
           .from('user_comments')
@@ -120,18 +148,7 @@ const MinSide = () => {
         if (error) {
           console.error('Error deleting comment:', error);
         } else {
-          // Refresh user comments
-          const { data: comments, error: commentsError } = await supabase
-            .from('user_comments')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false });
-
-          if (commentsError) {
-            console.error('Error fetching user comments', commentsError);
-          } else {
-            setUserComments(comments);
-          }
+          setUserComments(userComments.filter(comment => comment.id !== commentId));
         }
       } catch (error) {
         console.error('Error deleting comment:', error);
@@ -140,51 +157,74 @@ const MinSide = () => {
   };
 
   if (!isLoggedIn) {
-    return <p>Please log in to view your liked products and comments.</p>;
+    return <p>Log venligst ind for at se dine favoritter og kommentarer.</p>;
   }
 
   return (
-    <div>
-      <h2>My Liked Products</h2>
-      {likedProducts.length > 0 ? (
-        <ul>
-          {likedProducts.map(product => (
-            <li key={product.id}>
-              <p>{product.title}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>You haven't liked any products yet.</p>
-      )}
+    <div className={styles.mainContainer}>
+      <div className={styles.commentsList}>
+        <h3>Mine favoritter</h3>
+        {likedProducts.length > 0 ? (
+          <ul>
+            {likedProducts.map(product => (
+              <li key={product.id} className={styles.likeList}>
+                <div className={styles.favoriteButton}>
+                  <LikeButton
+                    className={styles.likeButton}
+                    productId={product.id}
+                    initialLiked={true}
+                    onUpdate={handleUnlike} // Opdaterer favoritterne, når produktet fjernes
+                  />
+                </div>
+                <div>
+                  <Link to={`/product/${encodeURIComponent(product.title)}`}>
+                    {product.title}
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Du har ingen favoritter endnu.</p>
+        )}
+      </div>
+      <div className={styles.commentsList}>
+        <h3>Mine kommentarer</h3>
+        {userComments.length > 0 ? (
+          <ul>
+            {userComments.map(comment => (
+              <li key={comment.id} className={styles.commentItem}>
+                <p>
+                  <strong>Produkt: </strong>
+                  <Link to={`/product/${encodeURIComponent(comment.products.title)}`} className={styles.comment}>
+                    {comment.products.title}
+                  </Link>
+                </p>
+                <p className={styles.comment}>{comment.comment}</p>
+                <div className={styles.buttons}>
+                  <button onClick={() => handleEditClick(comment)} className={styles.button}>Rediger</button>
+                  <button onClick={() => handleDeleteClick(comment.id)} className={styles.button}>Slet</button>
+                </div>
 
-      <h2>My Comments</h2>
-      {userComments.length > 0 ? (
-        <ul>
-          {userComments.map(comment => (
-            <li key={comment.id} className={styles.commentItem}>
-              <p><strong>Product ID: {comment.product_id}</strong></p>
-              <p>{comment.comment}</p>
-              <button onClick={() => handleEditClick(comment)}>Edit</button>
-              <button onClick={() => handleDeleteClick(comment.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>You haven't commented on any products yet.</p>
-      )}
-
-      {isEditing && (
-        <form onSubmit={handleEditSubmit} className={styles.editForm}>
-          <textarea
-            value={editedComment}
-            onChange={handleEditChange}
-            required
-          />
-          <button type="submit">Save Changes</button>
-          <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-        </form>
-      )}
+                {/* Redigeringsformular vises kun for den aktuelle kommentar */}
+                {isEditing && editingCommentId === comment.id && (
+                  <form onSubmit={handleEditSubmit} className={styles.editForm}>
+                    <textarea
+                      value={editedComment}
+                      onChange={handleEditChange}
+                      required
+                    />
+                    <button type="submit">Gem ændringer</button>
+                    <button type="button" onClick={() => setIsEditing(false)}>Annuller</button>
+                  </form>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Du har ingen kommentarer endnu.</p>
+        )}
+      </div>
     </div>
   );
 };

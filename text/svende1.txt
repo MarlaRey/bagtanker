@@ -161,3 +161,25 @@ Jeg løser problemet delvist, men får ikke vist den kategori jeg klikker på, j
     }
   };
 men dette gør at når jeg navigerer tilbage får jeg vist den kategori jeg havde fremme før jeg navigerede væk fra productlist, jeg ændrer derfor idt igen, men det vil ikke virke. jeg dropper det for nu og går vidree, da det virker i grove træk og jeg har andet jeg skal nå.
+
+ProductDetails slideshow-problemer
+jeg har et problem med at slideshowet kun viser første billede og derefter broken links når jeg er på productDetails. Jeg løser det sådan her:
+Istedet for at hardcode billedstierne ind i min return:
+*        {/* <Slideshow images={[
+          'src/assets/images/bread-full01.jpeg',
+          'src/assets/images/bread-full02.jpeg',
+          'src/assets/images/bread-full03.jpeg',
+          'src/assets/images/bread-full04.jpeg',
+          'src/assets/images/bread-full05.jpeg',
+          'src/assets/images/bread-full06.jpeg',
+          'src/assets/images/bread-full07.jpeg',
+          'src/assets/images/bread-full08.jpeg',
+          'src/assets/images/bread-full09.jpeg'
+        ]} showDots={false} /> */} så importerer jeg dem i toppen. det giver en meget mere stabil omgang med billeder. Jeg har prøvet det før, hvor jeg havde problmer med broken links og løste det sådan her og nu løste det igen problemet. skønt.
+
+Jeg føler mig bagud i dag. kan godt mærke den dårlige søvn og hvordan det går ud over humrøet. særligt også når alting driller i dag. jeg er lettere stresset fordi i morgen kommer walter hjem og så har jeg kun 2 halve dage tilbage at lave det sidste i. Jeg skal passe på ikke at fordybe mig i små visuelle detaljer. Det med slideshowet tog overhånd. men det betyder nu alligevel også en del for mig at det kom til at virke.
+
+MHT Login:
+du kan bruge brugeren hallo@nybruger.dk adg: 123456, for at få minSide oplevelsen.
+
+Puha for en dårlig dag. jeg er sååå træt og det kombineret med stress oig bugs er bare ik nice. Nu lukker jeg ned for idag. jeg er kommet i mål med kravene og mangler at style, skrive rapport og kommentere i koden... kommer tid kommer råd.
