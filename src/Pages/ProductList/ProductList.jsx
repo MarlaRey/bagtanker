@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import supabase from '../../../supabase';
 import styles from './ProductList.module.scss';
 import LikeButton from '../../components/LikeButton/LikeButton';
+import { Helmet } from 'react-helmet';
 
 const ProductList = ({ selectedCategory }) => {
   const [products, setProducts] = useState([]);
@@ -99,7 +100,7 @@ const ProductList = ({ selectedCategory }) => {
 
       const { data: imageData, error: imageError } = await supabase
         .from('images')
-        .select('*')
+        .select('*');
 
       if (imageError) {
         throw imageError;
@@ -113,6 +114,9 @@ const ProductList = ({ selectedCategory }) => {
 
   return (
     <div className={styles.productList}>
+      <Helmet>
+        <title>Bagtanker | Produkter</title>
+      </Helmet>
       <div className={styles.sortOptions}>
         <select value={sortType} onChange={handleSortChange}>
           <option value="alphabetical">Sort by Alphabetical</option>

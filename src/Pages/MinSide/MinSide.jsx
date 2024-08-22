@@ -4,6 +4,7 @@ import supabase from '../../../supabase';
 import { AuthContext } from '../../context/AuthContext';
 import styles from './MinSide.module.scss';
 import LikeButton from '../../components/LikeButton/LikeButton';
+import { Helmet } from 'react-helmet';
 
 const MinSide = () => {
   const [likedProducts, setLikedProducts] = useState([]);
@@ -162,6 +163,9 @@ const MinSide = () => {
 
   return (
     <div className={styles.mainContainer}>
+            <Helmet>
+        <title>Bagtanker | Min side</title>
+      </Helmet>
       <div className={styles.commentsList}>
         <h3>Mine favoritter</h3>
         {likedProducts.length > 0 ? (

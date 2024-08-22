@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import supabase from '../../../supabase';
 import ErrorComponent from '../../components/ErrorComponent/ErrorComponent';
+import { Helmet } from 'react-helmet';
 
 const NewsDetail = () => {
   const { id } = useParams();
@@ -10,7 +11,6 @@ const NewsDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newsImageUrl, setNewsImageUrl] = useState(null);
-
 
   useEffect(() => {
     const fetchNewsItem = async () => {
@@ -21,7 +21,6 @@ const NewsDetail = () => {
       }
 
       try {
-        // Fetch the news item data
         const { data: newsData, error: newsError } = await supabase
           .from('news')
           .select('id, title, teaser, content, image_id, created_at')
@@ -34,7 +33,6 @@ const NewsDetail = () => {
 
         setNewsItem(newsData);
 
-        // Fetch image if exists
         if (newsData && newsData.image_id) {
           const { data: imageData, error: imageError } = await supabase
             .from('images')
@@ -78,15 +76,17 @@ const NewsDetail = () => {
     <div>
       {newsItem ? (
         <>
+          <Helmet>
+            <title>Bagtanker | {newsItem.title}</title>
+
+          </Helmet>
 
           {newsImageUrl ? (
             <img src={newsImageUrl} alt={newsItem?.title} />
           ) : (
             <p>No image available</p>
           )}
-          
           <p>{newsItem.content}</p>
-
         </>
       ) : (
         <p>News item not found.</p>

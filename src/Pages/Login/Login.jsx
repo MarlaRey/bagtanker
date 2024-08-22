@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import supabase from '../../../supabase';
 import { AuthContext } from '../../context/AuthContext';
 import styles from './Login.module.scss'; // Import the updated CSS
+import { Helmet } from 'react-helmet';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -47,7 +48,9 @@ const Login = () => {
 
   return (   <div className={styles.mainContainer}>
     <div className={styles.loginContainer}>
-
+    <Helmet>
+        <title>Bagtanker | Login</title>
+      </Helmet>
      
       {error && <p className={styles.error}>{error}</p>}
       {success && <p className={styles.success}>{success}</p>}

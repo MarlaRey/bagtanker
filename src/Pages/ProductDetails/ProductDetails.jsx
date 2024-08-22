@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import supabase from '../../../supabase';
 import styles from './ProductDetails.module.scss';
 import LikeButton from '../../components/LikeButton/LikeButton';
+import { Helmet } from 'react-helmet';
 
 
 const ProductDetail = () => {
@@ -192,6 +193,10 @@ const ProductDetail = () => {
 
   return (
     <div className={styles.productDetailPage}>
+             <Helmet>
+        <title>{product ? `${product.title}` : 'Loading...'}</title>
+  
+      </Helmet>
       <div className={styles.productDescription}>
         <div className={styles.productContent}>
           {productImageUrl ? (

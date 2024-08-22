@@ -3,6 +3,7 @@ import styles from './Home.module.scss';
 import Slideshow from '../../components/Slideshow/Slideshow';
 import supabase from '../../../supabase';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const Home = () => {
   const images = [
@@ -65,6 +66,9 @@ const Home = () => {
 
   return (
     <div className={styles.home}>
+            <Helmet>
+        <title>Bagtanker | Seneste nyt</title>
+      </Helmet>
       <Slideshow images={images} showDots={true} fullHeight={true} />
       <header>
         <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className={styles.logo} />
