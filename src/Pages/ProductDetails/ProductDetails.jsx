@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import supabase from '../../../supabase';
 import styles from './ProductDetails.module.scss';
+import LikeButton from '../../components/LikeButton/LikeButton';
+
 
 const ProductDetail = () => {
   const { title } = useParams(); // Hent title fra URL
@@ -12,8 +14,9 @@ const ProductDetail = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [newTitle, setNewTitle] = useState('');
-  const [user, setUser] = useState(null); // User state for authentication
-  const navigate = useNavigate(); // Hook for navigation
+  const [user, setUser] = useState(null);
+  const [ingredients, setIngredients] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -55,7 +58,7 @@ const ProductDetail = () => {
         const { data: commentsData, error: commentsError } = await supabase
           .from('user_comments')
           .select('*')
-          .eq('product_id', productData.id) // Filter by product_id
+          .eq('product_id', productData.id)
           .order('created_at', { ascending: false });
 
         if (commentsError) {
@@ -63,6 +66,46 @@ const ProductDetail = () => {
           setError('Error fetching comments');
         } else {
           setComments(commentsData);
+        }
+
+        // Fetch ingredients
+        const { data: ingredientProductData, error: ingredientProductError } = await supabase
+          .from('ingredient_product_rel')
+          .select('ingredient_id, unit_id, amount')
+          .eq('product_id', productData.id);
+
+        if (ingredientProductError) {
+          console.error('Ingredient product fetch error:', ingredientProductError);
+          setError('Error fetching ingredients');
+        } else {
+          const ingredientIds = ingredientProductData.map(rel => rel.ingredient_id);
+          const unitIds = ingredientProductData.map(rel => rel.unit_id);
+
+          const { data: ingredientsData, error: ingredientsError } = await supabase
+            .from('ingredients')
+            .select('id, title')
+            .in('id', ingredientIds);
+
+          const { data: unitsData, error: unitsError } = await supabase
+            .from('units')
+            .select('id, abbreviation')
+            .in('id', unitIds);
+
+          if (ingredientsError || unitsError) {
+            console.error('Error fetching ingredients or units:', ingredientsError || unitsError);
+            setError('Error fetching ingredients');
+          } else {
+            const ingredientList = ingredientProductData.map(rel => {
+              const ingredient = ingredientsData.find(ing => ing.id === rel.ingredient_id);
+              const unit = unitsData.find(u => u.id === rel.unit_id);
+              return {
+                name: ingredient ? ingredient.title : 'Unknown',
+                amount: rel.amount,
+                unit: unit ? unit.abbreviation : 'Unknown'
+              };
+            });
+            setIngredients(ingredientList);
+          }
         }
 
         setLoading(false);
@@ -82,9 +125,6 @@ const ProductDetail = () => {
     fetchUser();
   }, [title]);
 
-  const handleBackButtonClick = () => {
-    navigate(-1); // Navigate back to the previous page
-  };
 
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);
@@ -113,10 +153,10 @@ const ProductDetail = () => {
         .from('user_comments')
         .insert([
           {
-            title: newTitle, // Use newTitle for the name field
+            title: newTitle,
             comment: newComment,
-            user_id: user.id, // Use user's ID
-            product_id: productData.id, // Use the product's ID
+            user_id: user.id,
+            product_id: productData.id,
             created_at: new Date().toISOString()
           }
         ]);
@@ -152,25 +192,48 @@ const ProductDetail = () => {
 
   return (
     <div className={styles.productDetailPage}>
+      <div className={styles.productDescription}>
+        <div className={styles.productContent}>
+          {productImageUrl ? (
+            <img src={productImageUrl} alt={product?.title} />
+          ) : (
+            <p>No image available</p>
+          )}
+          <p className={styles.teaser}>{product?.teaser}</p>
+          <p className={styles.description}>{product?.description}</p>
+        </div>
 
-      <div className={styles.productContent}>
-        {productImageUrl ? (
-          <img src={productImageUrl} alt={product?.title} />
-        ) : (
-          <p>No image available</p>
-        )}
-        <p>{product?.description}</p>
-        <button onClick={handleBackButtonClick} className={styles.backButton}>
-          Back
-        </button>
+        <div className={styles.detailsSection}>
+          <div className={styles.detailsHeader}>
+            <h4>Opskrift</h4>
+            <LikeButton
+                    productId={product.id}
+                    initialLikesCount={product.likes_count}
+                    initialLiked={false} // Assuming initial liked status is false
+                  />
+          </div>
+          <div className={styles.detailsBox}>
+            <p><strong>Varighed:</strong> {product?.duration} minutter</p>
+            <p><strong>Antal:</strong> {product?.amount}</p>
+            <ul>
+              <p><strong>Ingredienser:</strong></p>
+              {ingredients.map((ingredient, index) => (
+                <li key={index}>{ingredient.name} - {ingredient.amount} {ingredient.unit}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
 
+
+
       <div className={styles.commentsSection}>
-        <h3>Kommentarer</h3>
+        <h2>Kommentarer</h2>
         <div className={styles.commentsList}>
           {comments.map((comment) => (
             <div key={comment.id} className={styles.comment}>
-              <p><strong>{comment.title}</strong> <em>({new Date(comment.created_at).toLocaleDateString()})</em></p>
+              <h4><strong>{comment.title}</strong></h4>
+              <p className={styles.commentDate}>{new Date(comment.created_at).toLocaleDateString()}</p>
               <p>{comment.comment}</p>
               <hr className={styles.commentSeparator} />
             </div>
@@ -178,20 +241,21 @@ const ProductDetail = () => {
         </div>
         
         <form onSubmit={handleCommentSubmit} className={styles.commentForm}>
+          <h4>Skriv en kommentar</h4>
           <input
             type="text"
             value={newTitle}
             onChange={handleTitleChange}
-            placeholder="Your Name"
+            placeholder="Dit navn"
             required
           />
           <textarea
             value={newComment}
             onChange={handleCommentChange}
-            placeholder="Write your comment here..."
+            placeholder="Skriv din kommentar her..."
             required
           />
-          <button type="submit">Submit Comment</button>
+          <button type="submit">Tilføj kommentar til produktet</button>
         </form>
       </div>
     </div>

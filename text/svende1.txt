@@ -180,6 +180,20 @@ Istedet for at hardcode billedstierne ind i min return:
 Jeg føler mig bagud i dag. kan godt mærke den dårlige søvn og hvordan det går ud over humrøet. særligt også når alting driller i dag. jeg er lettere stresset fordi i morgen kommer walter hjem og så har jeg kun 2 halve dage tilbage at lave det sidste i. Jeg skal passe på ikke at fordybe mig i små visuelle detaljer. Det med slideshowet tog overhånd. men det betyder nu alligevel også en del for mig at det kom til at virke.
 
 MHT Login:
-du kan bruge brugeren hallo@nybruger.dk adg: 123456, for at få minSide oplevelsen.
+du kan bruge brugeren hallo@nybruger.dk adg: 123456, for at få minSide oplevelsen hos en der har liket og kommenteret lidt.
 
 Puha for en dårlig dag. jeg er sååå træt og det kombineret med stress oig bugs er bare ik nice. Nu lukker jeg ned for idag. jeg er kommet i mål med kravene og mangler at style, skrive rapport og kommentere i koden... kommer tid kommer råd.
+
+----------------
+torsdag: 06:09. Så er vi gang igen! Jeg sov godt i nat. har besluttet mig på at udnytte morgentimerne og få det fra hånden jeg kan, inden jeg er nød til at tage hjjemmefra kl 12 og først kan arbejde igen i aften når walter sover.
+Dagens plan:
+ProductDetails alle elementer på og styling og responsiv
+minSide styling og responisv
+styr på at burgermenuen er der i responsiv
+
+MIN SIDE
+Jeg har taget et valg om at tilføje noget til minSide, nemlig at de opskrifter man har liket ligger sig der. Det synes jeg giver meniung eftersom man så har sin egen lille opskrigftsbog - det tænker jeg man bruger mere end man bruger tiden på at sidde oig redigere kommentarer. Måden jeg har gjort det på vil jeg gerne komme ind på til prøven, hvis I er interessede i at høre det. Her kan jeg også komme ind på hele kommentardelen og hvordan jeg har valgt at bruge title-kolonnen i usercomments som navnefelt. Det virker nok lidt rodet. men det var fordi det visuelle oplæg efterspurgte et navn, og fordi det virker godt med et navn for de andre brugere og databasen havde ikke et navnefelt. 
+fjern ved at klikke på hjerte har måske ikke den bedste ui, men jeg syntes det var sjovt at bruge LikeButoon-komponentet her.
+
+komment-delen på minside har fået et andet layout da der efterspørges et navn og der er ikke noget inputfelt til navn.
+

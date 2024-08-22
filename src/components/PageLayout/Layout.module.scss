@@ -134,4 +134,12 @@
       margin-top: 1rem;
     }
   }
-}
+  .breadcrumbs {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin: auto;
+    margin-top: 2rem;
+    padding-left: 1rem;
+    width: 100vw;
+}}
