@@ -135,7 +135,7 @@ const ProductList = ({ selectedCategory }) => {
                 <div className={styles.productActions}>
                   <button 
                     onClick={() => handleReadMore(product.id)} 
-                    className={styles.readMore}
+                    className={styles.read}
                   >
                     Read more
                   </button>

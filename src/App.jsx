@@ -28,12 +28,12 @@ const App = () => {
           <Route path="/produkter" element={<Layout onCategoryChange={handleCategoryChange}>
             <ProductList selectedCategory={selectedCategory} />
           </Layout>} />
-          <Route path="/product/:title" element={<Layout><ProductDetails/></Layout>} />
-          <Route path="/nyheder" element={<Layout><News /></Layout>} />
-          <Route path="/kontakt" element={<Layout><Contact /></Layout>} />
+          <Route path="/product/:title" element={<Layout Layout onCategoryChange={handleCategoryChange}><ProductDetails/></Layout>} />
+          <Route path="/nyheder" element={<Layout Layout onCategoryChange={handleCategoryChange}><News /></Layout>} />
+          <Route path="/kontakt" element={<Layout Layout onCategoryChange={handleCategoryChange}><Contact /></Layout>} />
           <Route path="/login" element={<Layout><Login /></Layout>} />
-          <Route path="/nyheder/:id" element={<Layout><NewsDetail /></Layout>} />
-          <Route path="/minside" element={<Layout><MinSide /></Layout>} />
+          <Route path="/nyheder/:id" element={<Layout Layout onCategoryChange={handleCategoryChange}><NewsDetail /></Layout>} />
+          <Route path="/minside" element={<Layout Layout onCategoryChange={handleCategoryChange}><MinSide /></Layout>} />
         </Routes>
       </Router>
     </AuthProvider>

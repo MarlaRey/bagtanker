@@ -14,13 +14,12 @@ import image6 from '../../assets/images/bread-full06.jpeg'; // Import banner ima
 import image7 from '../../assets/images/bread-full07.jpeg'; // Import banner image
 import image8 from '../../assets/images/bread-full08.jpeg'; // Import banner image
 
-
-
 const Layout = ({ children, onCategoryChange }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [breadcrumbTitles, setBreadcrumbTitles] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -46,6 +45,34 @@ const Layout = ({ children, onCategoryChange }) => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    // Function to generate breadcrumb titles
+    const fetchBreadcrumbTitles = async () => {
+      const pathnames = location.pathname.split('/').filter((x) => x);
+      const titles = {};
+
+      for (let i = 0; i < pathnames.length; i++) {
+        const path = pathnames[i];
+        // Assuming path is the category ID or something you can lookup
+        if (path !== 'produkter') {
+          const { data, error } = await supabase
+            .from('categories')
+            .select('title')
+            .eq('id', path)
+            .single();
+
+          if (data) {
+            titles[path] = data.title;
+          }
+        }
+      }
+
+      setBreadcrumbTitles(titles);
+    };
+
+    fetchBreadcrumbTitles();
+  }, [location.pathname]);
+
   const handleCategoryClick = (categoryId) => {
     if (location.pathname !== '/produkter') {
       // Hvis vi ikke er på /produkter, naviger til /produkter med valgt kategori
@@ -63,7 +90,7 @@ const Layout = ({ children, onCategoryChange }) => {
     const pathnames = location.pathname.split('/').filter((x) => x);
     const breadcrumbs = pathnames.map((path, index) => {
       const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-      return { path: decodeURIComponent(path), to }; // Decode path to handle URL encoding
+      return { path: breadcrumbTitles[path] || decodeURIComponent(path), to }; // Use title if available, otherwise decode path
     });
 
     return breadcrumbs;
@@ -79,7 +106,6 @@ const Layout = ({ children, onCategoryChange }) => {
           <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className={styles.logo} />
         </Link>
         <Slideshow images={[image1,image2,image3,image4,image5,image6,image7,image8]} showDots={false} />
-
       </header>
       <nav className={styles.menu}>
         {loading && <p>Loading...</p>}

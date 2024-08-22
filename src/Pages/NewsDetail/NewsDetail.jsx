@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import supabase from '../../../supabase';
-import styles from './NewsDetail.module.scss'; // Importer CSS-modulet
+import ErrorComponent from '../../components/ErrorComponent/ErrorComponent';
 
 const NewsDetail = () => {
   const { id } = useParams();
   const [newsItem, setNewsItem] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchNewsItem = async () => {
+      if (!id) {
+        setError('Invalid news item ID.');
+        setLoading(false);
+        return;
+      }
+
       try {
-        console.log(`Fetching news item with id ${id}...`);
+        // Fetch the news item data
         const { data: newsData, error: newsError } = await supabase
           .from('news')
-          .select(`
-            id, 
-            title, 
-            content, 
-            datetime, 
-            author,
-            image_id
-          `)
+          .select('id, title, teaser, content, image_id, created_at')
           .eq('id', id)
           .single();
 
@@ -30,12 +30,12 @@ const NewsDetail = () => {
           throw newsError;
         }
 
-        console.log('News item data:', newsData);
+        setNewsItem(newsData);
 
-        // Fetch image details based on image_id
+        // Fetch the image filename using the image_id from the news item
         const { data: imageData, error: imageError } = await supabase
           .from('images')
-          .select('filename, author')
+          .select('filename')
           .eq('id', newsData.image_id)
           .single();
 
@@ -43,19 +43,13 @@ const NewsDetail = () => {
           throw imageError;
         }
 
-        console.log('Image data:', imageData);
-
-        // Combine news item with image details
-        const newsItemWithImage = {
-          ...newsData,
-          image: imageData, // Add image details to news item
-        };
-
-        setNewsItem(newsItemWithImage);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Error fetching data');
+        // Assuming the images are stored in a public directory, construct the URL
+        const imageUrl = `https://your-storage-bucket-url/${imageData.filename}`;
+        setImageUrl(imageUrl);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err.message || 'Failed to fetch the news item.');
+      } finally {
         setLoading(false);
       }
     };
@@ -63,20 +57,30 @@ const NewsDetail = () => {
     fetchNewsItem();
   }, [id]);
 
+  const handleRetry = () => {
+    setError(null);
+    setLoading(true);
+    fetchNewsItem();
+  };
+
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+
+  if (error) {
+    return <ErrorComponent message={error} onRetry={handleRetry} />;
+  }
 
   return (
-    <div className={styles.newsDetail}> {/* Anvend CSS-moduler */}
-      <h2 className={styles.title}>{newsItem.title}</h2>
-      <h4 className={styles.author}>Skrevet af {newsItem.author} den {new Date(newsItem.datetime).toLocaleDateString()}</h4>
-      {newsItem.image && (
-        <div className={styles.imageContainer}>
-          <img src={newsItem.image.filename} alt={newsItem.title} className={styles.image} />
-          <p className={styles.imageAuthor}>Foto: {newsItem.image.author}</p>
-        </div>
+    <div>
+      {newsItem ? (
+        <>
+          <h1>{newsItem.title}</h1>
+          <p>{newsItem.content}</p>
+          {imageUrl && <img src={imageUrl} alt={newsItem.title} />}
+          {/* Render other news item details */}
+        </>
+      ) : (
+        <p>News item not found.</p>
       )}
-      <p className={styles.content}>{newsItem.content}</p>
     </div>
   );
 };
