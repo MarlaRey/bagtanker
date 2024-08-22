@@ -5,14 +5,15 @@ import BurgerMenu from '../BurgerMenu/BurgerMenu';
 import Footer from '../Footer/Footer'; 
 import styles from './Layout.module.scss';
 import supabase from '../../../supabase';
-import image1 from '../../assets/images/bread-full01.jpeg'; // Import banner image
-import image2 from '../../assets/images/bread-full02.jpeg'; // Import banner image
-import image3 from '../../assets/images/bread-full03.jpeg'; // Import banner image
-import image4 from '../../assets/images/bread-full04.jpeg'; // Import banner image
-import image5 from '../../assets/images/bread-full05.jpeg'; // Import banner image
-import image6 from '../../assets/images/bread-full06.jpeg'; // Import banner image
-import image7 from '../../assets/images/bread-full07.jpeg'; // Import banner image
-import image8 from '../../assets/images/bread-full08.jpeg'; // Import banner image
+import image1 from '../../assets/images/bread-full01.jpeg';
+import image2 from '../../assets/images/bread-full02.jpeg';
+import image3 from '../../assets/images/bread-full03.jpeg';
+import image4 from '../../assets/images/bread-full04.jpeg';
+import image5 from '../../assets/images/bread-full05.jpeg';
+import image6 from '../../assets/images/bread-full06.jpeg';
+import image7 from '../../assets/images/bread-full07.jpeg';
+import image8 from '../../assets/images/bread-full08.jpeg';
+import logo from '../../assets/images/Logo.png'; 
 
 const Layout = ({ children, onCategoryChange }) => {
   const [categories, setCategories] = useState([]);
@@ -33,8 +34,6 @@ const Layout = ({ children, onCategoryChange }) => {
         if (error) throw error;
 
         setCategories(data);
-        setSelectedCategory(data[0]?.id); // Vælg første kategori som standard
-        onCategoryChange(data[0]?.id); // Send første kategori til ProductList
         setLoading(false);
       } catch (error) {
         setError('Error fetching categories');
@@ -46,24 +45,20 @@ const Layout = ({ children, onCategoryChange }) => {
   }, []);
 
   useEffect(() => {
-    // Function to generate breadcrumb titles
     const fetchBreadcrumbTitles = async () => {
-      const pathnames = location.pathname.split('/').filter((x) => x);
+      const urlParams = new URLSearchParams(location.search);
+      const categoryId = urlParams.get('category');
       const titles = {};
 
-      for (let i = 0; i < pathnames.length; i++) {
-        const path = pathnames[i];
-        // Assuming path is the category ID or something you can lookup
-        if (path !== 'produkter') {
-          const { data, error } = await supabase
-            .from('categories')
-            .select('title')
-            .eq('id', path)
-            .single();
+      if (categoryId) {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('title')
+          .eq('id', categoryId)
+          .single();
 
-          if (data) {
-            titles[path] = data.title;
-          }
+        if (data) {
+          titles['selectedCategory'] = data.title;
         }
       }
 
@@ -71,18 +66,13 @@ const Layout = ({ children, onCategoryChange }) => {
     };
 
     fetchBreadcrumbTitles();
-  }, [location.pathname]);
+  }, [location.search]);
 
   const handleCategoryClick = (categoryId) => {
-    if (location.pathname !== '/produkter') {
-      // Hvis vi ikke er på /produkter, naviger til /produkter med valgt kategori
-      navigate(`/produkter?${categoryId}`);
-      setSelectedCategory(categoryId);
-    } else {
-      // Hvis vi allerede er på /produkter, opdater valgt kategori
-      setSelectedCategory(categoryId);
-      onCategoryChange(categoryId); // Send valgte kategori til ProductList
-    }
+    // Naviger til /produkter med valgt kategori som query-parameter
+    navigate(`/Produkter?category=${categoryId}`);
+    setSelectedCategory(categoryId);
+    onCategoryChange(categoryId);
   };
 
   // Function to generate breadcrumb links
@@ -90,8 +80,15 @@ const Layout = ({ children, onCategoryChange }) => {
     const pathnames = location.pathname.split('/').filter((x) => x);
     const breadcrumbs = pathnames.map((path, index) => {
       const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-      return { path: breadcrumbTitles[path] || decodeURIComponent(path), to }; // Use title if available, otherwise decode path
+      return { path: breadcrumbTitles[path] || decodeURIComponent(path), to };
     });
+
+    // Tilføj den valgte kategori til breadcrumbs, hvis den findes
+    const urlParams = new URLSearchParams(location.search);
+    const categoryId = urlParams.get('category');
+    if (categoryId && breadcrumbTitles['selectedCategory']) {
+      breadcrumbs.push({ path: breadcrumbTitles['selectedCategory'], to: location.pathname });
+    }
 
     return breadcrumbs;
   };
@@ -103,7 +100,7 @@ const Layout = ({ children, onCategoryChange }) => {
       <header className={styles.header}>
         <BurgerMenu />
         <Link to="/">
-          <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className={styles.logo} />
+          <img className={styles.logo} src={logo} alt="logo" />
         </Link>
         <Slideshow images={[image1,image2,image3,image4,image5,image6,image7,image8]} showDots={false} />
       </header>

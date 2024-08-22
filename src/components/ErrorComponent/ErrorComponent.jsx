@@ -6,10 +6,10 @@ const ErrorComponent = ({ message, onRetry }) => {
   return (
     <div className={styles.errorContainer}>
       <h2>Something went wrong</h2>
-      <p>{message || "An unexpected error occurred. Please try again later."}</p>
+      <p>{message || "Noget gik galt, prøv at gå til forsiden og start forfra"}</p>
       {onRetry && (
         <button onClick={onRetry} className={styles.retryButton}>
-          Retry
+          
         </button>
       )}
     </div>

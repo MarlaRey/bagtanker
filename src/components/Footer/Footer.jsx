@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import styles from './Footer.module.scss';
 import supabase from '../../../supabase';
+import logo from '../../assets/images/Logo2.png'; 
+
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -35,8 +37,8 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.leftSide}>
-        <img src="src/assets/images/logo2.png" alt="Logo" className={styles.logo} />
-        <address>
+      <img className={styles.logo} src={logo} alt="logo" />
+      <address>
           Øster Uttrupvej 1<br />
           9000 Aalborg<br />
           Tlf: 12345678<br />

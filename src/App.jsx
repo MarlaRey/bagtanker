@@ -31,7 +31,7 @@ const App = () => {
           <Route path="/product/:title" element={<Layout Layout onCategoryChange={handleCategoryChange}><ProductDetails/></Layout>} />
           <Route path="/nyheder" element={<Layout Layout onCategoryChange={handleCategoryChange}><News /></Layout>} />
           <Route path="/kontakt" element={<Layout Layout onCategoryChange={handleCategoryChange}><Contact /></Layout>} />
-          <Route path="/login" element={<Layout><Login /></Layout>} />
+          <Route path="/login" element={<Layout Layout onCategoryChange={handleCategoryChange}><Login /></Layout>} />
           <Route path="/nyheder/:id" element={<Layout Layout onCategoryChange={handleCategoryChange}><NewsDetail /></Layout>} />
           <Route path="/minside" element={<Layout Layout onCategoryChange={handleCategoryChange}><MinSide /></Layout>} />
         </Routes>
