@@ -1,12 +1,11 @@
 import React from 'react';
-import styles from './News.module.scss'; // Import CSS-modulet som et objekt
-import NewsDetail from '../NewsDetail/NewsDetail';
+import styles from './News.module.scss'; 
 
 const News = () => {
   return (
-    <div className={styles.news}> {/* Anvend CSS-moduler */}
+    <div className={styles.news}> 
       <h2>No news is good news</h2>
-      <NewsDetail />
+
     </div>
   );
 };

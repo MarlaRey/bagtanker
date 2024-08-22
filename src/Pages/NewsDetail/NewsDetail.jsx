@@ -9,6 +9,8 @@ const NewsDetail = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [newsImageUrl, setNewsImageUrl] = useState(null);
+
 
   useEffect(() => {
     const fetchNewsItem = async () => {
@@ -32,20 +34,23 @@ const NewsDetail = () => {
 
         setNewsItem(newsData);
 
-        // Fetch the image filename using the image_id from the news item
-        const { data: imageData, error: imageError } = await supabase
-          .from('images')
-          .select('filename')
-          .eq('id', newsData.image_id)
-          .single();
+        // Fetch image if exists
+        if (newsData && newsData.image_id) {
+          const { data: imageData, error: imageError } = await supabase
+            .from('images')
+            .select('filename')
+            .eq('id', newsData.image_id)
+            .single();
 
-        if (imageError) {
-          throw imageError;
+          if (imageError) {
+            console.error('Image fetch error:', imageError);
+            setError('Error fetching image');
+          } else {
+            const imageUrl = imageData.filename;
+            setNewsImageUrl(imageUrl);
+          }
         }
 
-        // Assuming the images are stored in a public directory, construct the URL
-        const imageUrl = `https://your-storage-bucket-url/${imageData.filename}`;
-        setImageUrl(imageUrl);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err.message || 'Failed to fetch the news item.');
@@ -73,10 +78,15 @@ const NewsDetail = () => {
     <div>
       {newsItem ? (
         <>
-          <h1>{newsItem.title}</h1>
+
+          {newsImageUrl ? (
+            <img src={newsImageUrl} alt={newsItem?.title} />
+          ) : (
+            <p>No image available</p>
+          )}
+          
           <p>{newsItem.content}</p>
-          {imageUrl && <img src={imageUrl} alt={newsItem.title} />}
-          {/* Render other news item details */}
+
         </>
       ) : (
         <p>News item not found.</p>

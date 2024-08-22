@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment } from 'react'; 
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Slideshow from '../Slideshow/Slideshow';
 import BurgerMenu from '../BurgerMenu/BurgerMenu';
 import Footer from '../Footer/Footer'; 
@@ -23,6 +23,7 @@ const Layout = ({ children, onCategoryChange }) => {
   const [breadcrumbTitles, setBreadcrumbTitles] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams(); // Capture dynamic segment like news ID
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -62,38 +63,55 @@ const Layout = ({ children, onCategoryChange }) => {
         }
       }
 
+      // Hvis vi er på en nyhedsside, skal vi hente nyhedens titel
+      if (location.pathname.includes('/nyheder/') && id) {
+        const { data: newsData, error: newsError } = await supabase
+          .from('news')
+          .select('title')
+          .eq('id', id)
+          .single();
+
+        if (newsData) {
+          titles['newsTitle'] = newsData.title;
+        }
+      }
+
       setBreadcrumbTitles(titles);
     };
 
     fetchBreadcrumbTitles();
-  }, [location.search]);
+  }, [location.search, location.pathname, id]);
 
   const handleCategoryClick = (categoryId) => {
-    // Naviger til /produkter med valgt kategori som query-parameter
     navigate(`/Produkter?category=${categoryId}`);
     setSelectedCategory(categoryId);
     onCategoryChange(categoryId);
   };
 
-  // Function to generate breadcrumb links
   const getBreadcrumbs = () => {
     const pathnames = location.pathname.split('/').filter((x) => x);
     const breadcrumbs = pathnames.map((path, index) => {
       const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-      return { path: breadcrumbTitles[path] || decodeURIComponent(path), to };
+      const breadcrumbTitle = breadcrumbTitles[path] || decodeURIComponent(path);
+      return { path: breadcrumbTitle, to };
     });
 
-    // Tilføj den valgte kategori til breadcrumbs, hvis den findes
     const urlParams = new URLSearchParams(location.search);
     const categoryId = urlParams.get('category');
     if (categoryId && breadcrumbTitles['selectedCategory']) {
       breadcrumbs.push({ path: breadcrumbTitles['selectedCategory'], to: location.pathname });
     }
 
+    // Hvis vi er på en nyhedsside, tilføj nyhedstitlen
+    if (location.pathname.includes('/nyheder/') && breadcrumbTitles['newsTitle']) {
+      breadcrumbs[breadcrumbs.length - 1].path = breadcrumbTitles['newsTitle'];
+    }
+
     return breadcrumbs;
   };
 
   const breadcrumbs = getBreadcrumbs();
+
 
   return (
     <div className={styles.layout}>
@@ -126,6 +144,7 @@ const Layout = ({ children, onCategoryChange }) => {
         ))}</p>
         <h2>{breadcrumbs[breadcrumbs.length - 1]?.path || 'Home'}</h2>
       </div>
+
       <main className={styles.main}>
         {children}
       </main>
