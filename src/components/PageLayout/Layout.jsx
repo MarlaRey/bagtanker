@@ -83,7 +83,7 @@ const Layout = ({ children, onCategoryChange }) => {
   }, [location.search, location.pathname, id]);
 
   const handleCategoryClick = (categoryId) => {
-    navigate(`/Produkter?category=${categoryId}`);
+    navigate(`/produkter?category=${categoryId}`);
     setSelectedCategory(categoryId);
     onCategoryChange(categoryId);
   };
@@ -93,13 +93,13 @@ const Layout = ({ children, onCategoryChange }) => {
     const breadcrumbs = pathnames.map((path, index) => {
       const to = `/${pathnames.slice(0, index + 1).join('/')}`;
       const breadcrumbTitle = breadcrumbTitles[path] || decodeURIComponent(path);
-      return { path: breadcrumbTitle, to };
+      return { path: breadcrumbTitle, to, key: `${to}-${index}` }; // Ensure unique key
     });
 
     const urlParams = new URLSearchParams(location.search);
     const categoryId = urlParams.get('category');
     if (categoryId && breadcrumbTitles['selectedCategory']) {
-      breadcrumbs.push({ path: breadcrumbTitles['selectedCategory'], to: location.pathname });
+      breadcrumbs.push({ path: breadcrumbTitles['selectedCategory'], to: location.pathname, key: `category-${categoryId}` });
     }
 
     // Hvis vi er på en nyhedsside, tilføj nyhedstitlen
@@ -111,7 +111,6 @@ const Layout = ({ children, onCategoryChange }) => {
   };
 
   const breadcrumbs = getBreadcrumbs();
-
 
   return (
     <div className={styles.layout}>
@@ -137,7 +136,7 @@ const Layout = ({ children, onCategoryChange }) => {
       </nav>
       <div className={styles.breadcrumbs}>
         <p>Du er her: Home / {breadcrumbs.map((breadcrumb, index) => (
-          <Fragment key={breadcrumb.to}>
+          <Fragment key={breadcrumb.key}>
             <Link to={breadcrumb.to} className={styles.link}>{breadcrumb.path}</Link>
             {index < breadcrumbs.length - 1 && ' / '}
           </Fragment>
