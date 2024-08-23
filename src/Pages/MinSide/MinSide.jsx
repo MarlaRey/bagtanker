@@ -7,47 +7,49 @@ import LikeButton from '../../components/LikeButton/LikeButton';
 import { Helmet } from 'react-helmet';
 
 const MinSide = () => {
-  const [likedProducts, setLikedProducts] = useState([]);
-  const [userComments, setUserComments] = useState([]);
-  const [user, setUser] = useState(null);
-  const [editingCommentId, setEditingCommentId] = useState(null);
-  const [editedComment, setEditedComment] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const { isLoggedIn } = useContext(AuthContext);
+  const [likedProducts, setLikedProducts] = useState([]); // State til at gemme brugerens favoritter
+  const [userComments, setUserComments] = useState([]); // State til at gemme brugerens kommentarer
+  const [user, setUser] = useState(null); // State til at gemme den autentificerede bruger
+  const [editingCommentId, setEditingCommentId] = useState(null); // State til at holde styr på, hvilken kommentar der redigeres
+  const [editedComment, setEditedComment] = useState(''); // State til at holde den redigerede kommentar
+  const [isEditing, setIsEditing] = useState(false); // State til at indikere om der er en kommentar i redigering
+  const { isLoggedIn } = useContext(AuthContext); // Henter login-status fra AuthContext
 
   useEffect(() => {
     const fetchUserData = async () => {
+      // Henter den autentificerede bruger
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
 
       if (user) {
-        // Fetch liked products
+        // Henter brugerens favoritter
         const { data: favorites, error: favoriteError } = await supabase
           .from('favorite_rows')
           .select('product_id')
           .eq('user_id', user.id);
 
         if (favoriteError) {
-          console.error('Error fetching liked products', favoriteError);
+          console.error('Fejl ved hentning af favoritter', favoriteError);
           return;
         }
 
         if (favorites.length > 0) {
           const productIds = favorites.map(favorite => favorite.product_id);
 
+          // Henter produkter baseret på ID'er fra favoritter
           const { data: products, error: productError } = await supabase
             .from('products')
             .select('*')
             .in('id', productIds);
 
           if (productError) {
-            console.error('Error fetching products', productError);
+            console.error('Fejl ved hentning af produkter', productError);
           } else {
-            setLikedProducts(products);
+            setLikedProducts(products); // Opdaterer state med favoritter
           }
         }
 
-        // Fetch user comments and join with product titles
+        // Henter brugerens kommentarer og tilknytter produkt-titler
         const { data: comments, error: commentsError } = await supabase
           .from('user_comments')
           .select('*, products(title)')
@@ -55,9 +57,9 @@ const MinSide = () => {
           .order('created_at', { ascending: false });
 
         if (commentsError) {
-          console.error('Error fetching user comments', commentsError);
+          console.error('Fejl ved hentning af brugerkommentarer', commentsError);
         } else {
-          setUserComments(comments);
+          setUserComments(comments); // Opdaterer state med kommentarer
         }
       }
     };
@@ -68,59 +70,63 @@ const MinSide = () => {
   }, [isLoggedIn]);
 
   const handleUnlike = async () => {
-    // Refresh liked products after unlike action
+    // Opdaterer listen over favoritter efter fjernelse
     const { data: favorites, error: favoriteError } = await supabase
       .from('favorite_rows')
       .select('product_id')
       .eq('user_id', user.id);
 
     if (favoriteError) {
-      console.error('Error fetching liked products', favoriteError);
+      console.error('Fejl ved hentning af favoritter', favoriteError);
       return;
     }
 
     if (favorites.length > 0) {
       const productIds = favorites.map(favorite => favorite.product_id);
 
+      // Henter produkter baseret på opdaterede favoritter
       const { data: products, error: productError } = await supabase
         .from('products')
         .select('*')
         .in('id', productIds);
 
       if (productError) {
-        console.error('Error fetching products', productError);
+        console.error('Fejl ved hentning af produkter', productError);
       } else {
-        setLikedProducts(products);
+        setLikedProducts(products); // Opdaterer state med opdaterede favoritter
       }
     } else {
-      setLikedProducts([]);
+      setLikedProducts([]); // Ingen favoritter tilbage
     }
   };
 
   const handleEditClick = (comment) => {
+    // Starter redigeringsmodus for den valgte kommentar
     setEditingCommentId(comment.id);
     setEditedComment(comment.comment);
     setIsEditing(true);
   };
 
   const handleEditChange = (e) => {
-    setEditedComment(e.target.value);
+    setEditedComment(e.target.value); // Opdaterer den redigerede kommentar
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Opdaterer kommentar i databasen
       const { error } = await supabase
         .from('user_comments')
         .update({ comment: editedComment })
         .eq('id', editingCommentId);
 
       if (error) {
-        console.error('Error updating comment:', error);
+        console.error('Fejl ved opdatering af kommentar:', error);
       } else {
         setIsEditing(false);
         setEditingCommentId(null);
         setEditedComment('');
+        // Henter opdaterede kommentarer
         const { data: comments, error: commentsError } = await supabase
           .from('user_comments')
           .select('*, products(title)')
@@ -128,31 +134,32 @@ const MinSide = () => {
           .order('created_at', { ascending: false });
 
         if (commentsError) {
-          console.error('Error fetching user comments', commentsError);
+          console.error('Fejl ved hentning af brugerkommentarer', commentsError);
         } else {
-          setUserComments(comments);
+          setUserComments(comments); // Opdaterer state med opdaterede kommentarer
         }
       }
     } catch (error) {
-      console.error('Error editing comment:', error);
+      console.error('Fejl ved redigering af kommentar:', error);
     }
   };
 
   const handleDeleteClick = async (commentId) => {
     if (window.confirm('Er du sikker på, at du vil slette denne kommentar?')) {
       try {
+        // Sletter kommentar fra databasen
         const { error } = await supabase
           .from('user_comments')
           .delete()
           .eq('id', commentId);
 
         if (error) {
-          console.error('Error deleting comment:', error);
+          console.error('Fejl ved sletning af kommentar:', error);
         } else {
-          setUserComments(userComments.filter(comment => comment.id !== commentId));
+          setUserComments(userComments.filter(comment => comment.id !== commentId)); // Opdaterer state med slettede kommentarer
         }
       } catch (error) {
-        console.error('Error deleting comment:', error);
+        console.error('Fejl ved sletning af kommentar:', error);
       }
     }
   };
@@ -163,7 +170,7 @@ const MinSide = () => {
 
   return (
     <div className={styles.mainContainer}>
-            <Helmet>
+      <Helmet>
         <title>Bagtanker | Min side</title>
       </Helmet>
       <div className={styles.commentsList}>

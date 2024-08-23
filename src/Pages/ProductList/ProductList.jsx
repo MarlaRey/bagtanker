@@ -6,30 +6,33 @@ import LikeButton from '../../components/LikeButton/LikeButton';
 import { Helmet } from 'react-helmet';
 
 const ProductList = ({ selectedCategory }) => {
+  // State til at gemme produkterne, loading-status og sorteringstype
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortType, setSortType] = useState('alphabetical');
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation(); // Henter URL-placering
+  const navigate = useNavigate(); // Håndterer navigation
 
-  // Function to truncate text
+  // Funktion til at forkorte tekst
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
+      return text.substring(0, maxLength) + '...'; // Forkorter teksten og tilføjer '...'
     }
     return text;
   };
 
-  // Fetch products based on selected category and include images
+  // Henter produkter baseret på valgt kategori og inkluderer billeder
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true);
+      setLoading(true); // Sætter loading til true før hentning
 
       try {
+        // Henter URL-parametre for at finde den aktuelle kategori
         const urlParams = new URLSearchParams(location.search);
         const category = urlParams.get('category') || selectedCategory;
 
         if (category) {
+          // Henter produkter og billeder fra supabase baseret på kategori
           const { data: productsData, error: productsError } = await supabase
             .from('category_product_rel')
             .select(`
@@ -47,57 +50,64 @@ const ProductList = ({ selectedCategory }) => {
 
           if (productsError) throw productsError;
 
+          // Henter antal likes for hvert produkt
           const { data: likesData, error: likesError } = await supabase
             .from('favorite_rows')
             .select('product_id');
 
           if (likesError) throw likesError;
 
+          // Tæller antal likes for hvert produkt
           const likesCount = likesData.reduce((acc, { product_id }) => {
             acc[product_id] = (acc[product_id] || 0) + 1;
             return acc;
           }, {});
 
+          // Samler produktdata med billeder og antal likes
           const productsWithImagesAndLikes = productsData.map(item => ({
             ...item.products,
             image_url: item.products.images ? item.products.images.filename : null,
             likes_count: likesCount[item.products.id] || 0,
           }));
 
+          // Sorterer produkterne baseret på sorteringstype
           sortProducts(productsWithImagesAndLikes);
         }
       } catch (error) {
-        console.error('Error fetching products or likes', error);
+        console.error('Fejl ved hentning af produkter eller likes', error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Sætter loading til false efter hentning
       }
     };
 
     fetchProducts();
   }, [selectedCategory, sortType, location.search]);
 
-  // Function to sort the products based on the selected sort type
+  // Funktion til at sortere produkterne baseret på valgt sorteringstype
   const sortProducts = (productsList) => {
     if (sortType === 'alphabetical') {
-      productsList.sort((a, b) => a.title.localeCompare(b.title));
+      productsList.sort((a, b) => a.title.localeCompare(b.title)); // Sorter alfabetisk
     } else if (sortType === 'popularity') {
-      productsList.sort((a, b) => b.likes_count - a.likes_count);
+      productsList.sort((a, b) => b.likes_count - a.likes_count); // Sorter efter popularitet
     }
-    setProducts(productsList);
+    setProducts(productsList); // Opdaterer produkterne
   };
 
+  // Håndterer ændring af sorteringstype
   const handleSortChange = (event) => {
     setSortType(event.target.value);
   };
 
+  // Håndterer klik på 'Læs mere' knappen
   const handleReadMore = async (productId) => {
     try {
       const selectedProduct = products.find(item => item.id === productId);
 
       if (!selectedProduct) {
-        throw new Error('Selected product not found');
+        throw new Error('Valgt produkt ikke fundet');
       }
 
+      // Henter billeddata fra supabase
       const { data: imageData, error: imageError } = await supabase
         .from('images')
         .select('*');
@@ -106,9 +116,10 @@ const ProductList = ({ selectedCategory }) => {
         throw imageError;
       }
 
+      // Navigerer til produktdetaljesiden
       navigate(`/product/${encodeURIComponent(selectedProduct.title)}`);
     } catch (error) {
-      console.error('Error handling "Read more" click:', error);
+      console.error('Fejl ved håndtering af "Læs mere" klik:', error);
     }
   };
 
@@ -119,13 +130,13 @@ const ProductList = ({ selectedCategory }) => {
       </Helmet>
       <div className={styles.sortOptions}>
         <select value={sortType} onChange={handleSortChange}>
-          <option value="alphabetical">Sort by Alphabetical</option>
-          <option value="popularity">Sort by Popularity</option>
+          <option value="alphabetical">Sortér alfabetisk</option>
+          <option value="popularity">Sortér efter popularitet</option>
         </select>
       </div>
 
       {loading ? (
-        <p>Loading products...</p>
+        <p>Henter produkter...</p>
       ) : (
         <div className={styles.productsGrid}>
           {products.map(product => (
@@ -141,12 +152,12 @@ const ProductList = ({ selectedCategory }) => {
                     onClick={() => handleReadMore(product.id)} 
                     className={styles.readMore}
                   >
-                    Read more
+                    Læs mere
                   </button>
                   <LikeButton
                     productId={product.id}
                     initialLikesCount={product.likes_count}
-                    initialLiked={false} // Assuming initial liked status is false
+                    initialLiked={false} // Antager at initial liked status er false
                   />
                 </div>
               </div>

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 const Home = () => {
+  // Liste over billeder til slideshow
   const images = [
     'src/assets/images/bread-full02.jpeg',
     'src/assets/images/bread-full03.jpeg',
@@ -17,21 +18,22 @@ const Home = () => {
     'src/assets/images/bread-full09.jpeg'
   ];
 
-  const [news, setNews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [news, setNews] = useState([]); // State til at gemme nyheder
+  const [loading, setLoading] = useState(true); // State til at indikere om data er ved at blive hentet
+  const [error, setError] = useState(null); // State til at gemme fejlmeddelelser
 
-    // Function to truncate text
-    const truncateText = (text, maxLength) => {
-      if (text.length > maxLength) {
-        return text.substring(0, maxLength) + '...';
-      }
-      return text;
-    };
+  // Funktion til at forkorte tekst
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  };
 
   useEffect(() => {
     const fetchNewsAndImages = async () => {
       try {
+        // Henter nyheder og tilknyttede billeder fra Supabase
         const { data: newsData, error: newsError } = await supabase
           .from('news')
           .select(`
@@ -45,28 +47,29 @@ const Home = () => {
           throw newsError;
         }
 
+        // Tilføjer billed-URL til hver nyhed
         const newsWithImages = newsData.map(newsItem => ({
           ...newsItem,
           image_url: newsItem.images ? newsItem.images.filename : null,
         }));
 
-        setNews(newsWithImages);
-        setLoading(false);
+        setNews(newsWithImages); // Opdaterer state med nyheder
+        setLoading(false); // Data er færdig med at blive hentet
       } catch (error) {
-        setError('Error fetching data');
-        setLoading(false);
+        setError('Fejl ved hentning af data'); // Opdaterer state med fejlmeddelelse
+        setLoading(false); // Data er færdig med at blive hentet, trods fejl
       }
     };
 
     fetchNewsAndImages();
-  }, []);
+  }, []); // Tom afhængighedsliste betyder, at denne effekt kun kører én gang ved komponentens montering
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p>Loading...</p>; // Viser loading-tekst mens data hentes
+  if (error) return <p>{error}</p>; // Viser fejlmeddelelse, hvis der opstod en fejl
 
   return (
     <div className={styles.home}>
-            <Helmet>
+      <Helmet>
         <title>Bagtanker | Seneste nyt</title>
       </Helmet>
       <Slideshow images={images} showDots={true} fullHeight={true} />
@@ -74,7 +77,7 @@ const Home = () => {
         <img src="src/assets/images/Logo.png" alt="Bagtanker Logo" className={styles.logo} />
       </header>
 
-      <h2 className={styles['news-heading']}>Nyheder</h2> {/* Tilføjet h2 her */}
+      <h2 className={styles['news-heading']}>Nyheder</h2> {/* Overskrift for nyheder */}
 
       <div className={styles['news-section']}>
         <div className={styles['news-grid']}>
@@ -84,11 +87,11 @@ const Home = () => {
                 <img src={newsItem.image_url} alt={newsItem.title} />
               </div>
               <div>
-                <p>{new Date(newsItem.created_at).toLocaleDateString()}</p>
-                <h3>{newsItem.title}</h3>
-                <p>{truncateText(newsItem.teaser, 110)}</p>
+                <p>{new Date(newsItem.created_at).toLocaleDateString()}</p> {/* Viser datoen for nyheden */}
+                <h3>{newsItem.title}</h3> {/* Viser nyhedens titel */}
+                <p>{truncateText(newsItem.teaser, 110)}</p> {/* Viser en forkortet version af nyhedens teaser */}
                 <Link to={`/nyheder/${newsItem.id}`} className={styles['read-more-button']}>
-                  Read more
+                  Læs mere
                 </Link>
               </div>
             </div>
